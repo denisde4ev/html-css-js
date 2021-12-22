@@ -1,3 +1,4 @@
+// minimal JavaScript DOM library similar to jQuery, idea from https://github.com/MonaTem/minjs
 
 var $ = document.querySelector.bind(document)
 $.new = document.createElement.bind(document)
