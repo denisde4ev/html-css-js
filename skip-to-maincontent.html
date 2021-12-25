@@ -1,0 +1,32 @@
+<!DOCTYPE HTML><font face=monospace>
+
+<!-- DOM element IDs are global variables: https://html.spec.whatwg.org/#named-access-on-the-window-object -->
+<a
+	id=skip-to-maincontent
+	href=#maincontent
+	tabindex=1
+	onclick=maincontent.tabIndex=maincontent.tabIndex;return!!maincontent.focus()
+	style=opacity:0;position:absolute;top:1em
+><big><big><big><mark>Skip to main content</big></big></big></mark></a>
+<style> a#skip-to-maincontent:focus { opacity:1 !important; } </style>
+
+<center>
+<nav>
+	<table width=100% align=center bgcolor=veryfast>
+		<tr>
+			<td bgcolor=green align=center><a href=#link1>#link1</a></td>
+			<td bgcolor=green align=center><a href=#link2>#link2</a></td>
+			<td bgcolor=red   align=center><a href=#link3>#link3</a></td>
+			<td bgcolor=green align=center><a href=#link4>#link4</a></td>
+			<td bgcolor=green align=center><a href=#link5>#link5</a></td>
+		</tr>
+	</table>
+</nav>
+
+<hr>
+
+<main> <a id=maincontent tabindex=-1></a>
+	<div><h1><font color=color size=5>textarea type here:</font></h1></div>
+	<textarea></textarea>
+<main>
+
