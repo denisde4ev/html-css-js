@@ -1,0 +1,9 @@
+doctype html
+<html>
+head
+	title intex.html
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1">
+<body>
+	ul
+		each file in HTML_FILES
+			li #[a(href=file)= file.replace(/\.html$/,"")]
