@@ -1,0 +1,9 @@
+<!DOCTYPE html><html class="no-js"><head><title> </title><link type="text/css" rel="stylesheet" href="./gallery.css"><script>{
+let i = document.documentElement.classList;
+i.remove('no-js');
+i.add('js')
+i.add('js-loading')
+setTimeout(()=>i.remove('js-loading'))
+}
+
+</script></head><body><main><div class="d-fixed-center-XY p-fixed main-fixed"><div class="p-relative" id="i" style="--images-length:&quot;2&quot;"><input class="p-faraway nojs-d-none" type="radio" name="imgs" onChange="this.nextElementSibling.checked=true;this===document.activeElement&amp;&amp;this.nextElementSibling.focus()"><input class="hides" type="radio" name="imgs" id="image-0" checked><label class="img" for="image-0"><img src="https://images.unsplash.com/photo-1640527651483-a205c98757a5?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1470&amp;q=80"></label><input class="hides" type="radio" name="imgs" id="image-1"><label class="img" for="image-1"><img src="https://images.unsplash.com/photo-1640505398040-1ecf60f27391?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=687&amp;q=80"></label><input class="p-faraway" type="radio" name="imgs" onChange="this.checked=false"><input class="p-faraway" type="radio" name="imgs" onChange="this.checked=false;this===document.activeElement&amp;&amp;this.previousElementSibling.focus()"><div id="when-not-selected"><div><p>no more images</p><label class="link" for="image-0">go to image #1</label></div></div></div></div><script>document.getElementById('i').querySelector(':checked:not(.p-faraway)').focus() // ;document.activeElement.blur()</script></main>
