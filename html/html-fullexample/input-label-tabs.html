@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- <meta name="viewport" content="width=90, initial-scale=1"> -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./input-label-tabs.css"/>
+<script src="./input-label-tabs.js"></script></head>
+<body>
+<form class="d-none" id="null" action="data:," method="null" onsubmit="return!1"></form><main id="maincontent">
+<h1>Tab example</h1>
+<x-tabs class="radio" role="tabs" aria-label="My tabs">
+  <input class="sr-only" id="for-tab-1" type="radio" name="tabs1" form="null" role="tab?" aria-labelfor="tab1" tab-label="Tab 1 btn" checked="checked"/>
+  <input class="sr-only" id="for-tab-2" type="radio" name="tabs1" form="null" role="tab?" aria-labelfor="tab2" tab-label="Tab 2 btn"/>
+  <x-tabs-list class="d-flex-center-XY has-m-z5 has-p-z3" aria-hidden="aria-hidden">
+    <label class="btn" for="for-tab-1">
+      <u class="link">Tab 1 btn</u>
+    </label>
+    <label class="mbtn" for="for-tab-2">
+      <u class="link">Tab 2 btn</u>
+    </label>
+    <button class="mbtn">a</button>
+  </x-tabs-list>
+  <hr/>
+  <x-tabs-container>
+    <x-tab id="tab1">
+      <h2>This is tab 1</h2>
+    </x-tab>
+    <x-tab id="tab2">
+      <h2>This is tab 2</h2>
+    </x-tab>
+  </x-tabs-container>
+</x-tabs></main>
+</body></html>
