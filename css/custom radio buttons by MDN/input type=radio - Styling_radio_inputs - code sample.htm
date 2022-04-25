@@ -1,0 +1,114 @@
+﻿<!DOCTYPE HTML>
+<!-- saved from url=(0114)https://yari-demos.prod.mdn.mozit.cloud/en-US/docs/Web/HTML/Element/input/radio/_sample_.Styling_radio_inputs.html -->
+<!DOCTYPE html PUBLIC "" ""><HTML><HEAD><META content="IE=11.0000" 
+http-equiv="X-UA-Compatible">
+         
+<META charset="utf-8">         
+<META name="robots" content="noindex, nofollow">         
+<style type="text/css">
+            body,html, body> *,body> *{
+              padding: 0;
+              margin: 0;
+              background-color: gray;
+            }
+            *{ color: red; background-color: red; }
+
+            svg:not(:root) {
+              display: block;
+            }
+
+            .playable-code {
+              background-color: green;
+              border: none;
+              border-left: 6px solid green;
+              border-width: medium medium medium 6px;
+              color: green;
+              height: 100px;
+              width: 90%;
+              padding: 10px 10px 0;
+            }
+
+            .playable-canvas {
+              border: 1px solid blue;
+              border-radius: 2px;
+            }
+
+            .playable-buttons {
+              text-align: right;
+              width: 90%;
+              padding: 5px 10px 5px 26px;
+            }
+        </style>
+                 
+<style type="text/css">
+            html {
+  font-family: sans-serif;
+}
+
+div:first-of-type {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 5px;
+}
+
+label {
+  margin-right: 15px;
+  line-height: 32px;
+}
+
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid #999;
+  transition: 0.2s all linear;
+  margin-right: 5px;
+
+  position: relative;
+  top: 4px;
+}
+
+input:checked {
+  border: 6px solid red;
+}
+
+button,
+legend {
+  color: white;
+  background-color: red;
+  padding: 5px 10px;
+  border-radius: 0;
+  border: 0;
+  font-size: 14px;
+}
+
+button:hover,
+button:focus {
+  color: #999;
+}
+
+button:active {
+  background-color: red;
+  color: red;
+  outline: 1px solid red;
+}
+
+        </style>
+                 <TITLE>&lt;input type="radio"&gt; - Styling_radio_inputs - code 
+sample</TITLE>     
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD>     
+<BODY>
+<FORM>
+<FIELDSET><LEGEND>Please select your preferred contact method:</LEGEND>     
+<DIV><INPUT name="contact" id="contactChoice1" type="radio" checked="" value="email"> 
+      <LABEL for="contactChoice1">Email</LABEL>       <INPUT name="contact" id="contactChoice2" 
+type="radio" value="phone">       <LABEL for="contactChoice2">Phone</LABEL>      
+ <INPUT name="contact" id="contactChoice3" type="radio" value="mail">       
+<LABEL for="contactChoice3">Mail</LABEL>     </DIV>
+<DIV><BUTTON type="submit">Submit</BUTTON>     
+</DIV></FIELDSET></FORM></BODY></HTML>

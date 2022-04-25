@@ -1,0 +1,9 @@
+#parent, #this {
+	color: black;
+	opacity: 1;
+}
+
+#parent, #this {
+	font: unset;
+}
+

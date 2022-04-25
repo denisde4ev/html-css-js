@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+<title>Our Funky HTML Page</title>
+</head>
+<body>
+
+
+
+<script defer  src="./in-src-1.js"></script>
+<script async  src="./in-src-2.js"></script>
+<script defer  src="data:application/javascript,console.log('in%20data%20src%201')"></script>
+<script async  src="data:application/javascript,console.log('in%20data%20src%202')"></script>
+<script> /*no async defer*/ console.log('inline') </script>
+
+<pre>
+inline
+in data src 2
+in src 1
+in data src 1
+in src 2
+<pre>
+
+</body>
+</html>

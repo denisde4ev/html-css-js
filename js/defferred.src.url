@@ -1,0 +1,19 @@
+
+# https://duckduckgo.com/?q=minimal+Deferred+js+gist&t=ffab&ia=web
+https://gist.github.com/ojii/3135788
+
+
+
+// from https://stackoverflow.com/a/37673534
+function Deferred() {
+    var self = this;
+    var p = this.promise = new Promise(function(resolve, reject) {
+        self.resolve = resolve;
+        self.reject = reject;
+    });
+    this.then = p.then.bind(p);
+    this.catch = p.catch.bind(p);
+    if (p.finally) {
+        this.finally = p.finally.bind(p);
+    }
+}
