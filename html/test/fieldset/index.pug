@@ -1,0 +1,18 @@
+html
+	head #[title dstn]
+	body
+		form(action="javascript:alert('action')")
+			fieldset
+				legend
+					h4 legend
+
+				label
+					| date:
+					input(type='date')
+				br
+				a(href="#") link
+				| #[br]#[br]
+				input(type="submit")
+
+				each i in [...'123456']
+					| !{`\n<h${i}>${i}</h${i}>`}
