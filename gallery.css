@@ -1,4 +1,4 @@
-html, body { background: #111; color: white; font-family: sans-serif }
+html, body { background: #111; color: white; font-family: sans-serif; font-display: optional}
 *, *::aftfter, *::before { padding: 0; margin: 0; box-sizing: border-box; }
 
 .p-fixed { position: fixed !important; }
@@ -21,12 +21,12 @@ html.nojs .nojs-d-none {  display: none !important; }
 
 
 .main-fixed {
-   width: 100vw;
-   height: 100vh;
-   overflow: auto;
-   display: flex;
-   top: 0;
-   left: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+	display: flex;
+	top: 0;
+	left: 0;
 }
 
 #i {
@@ -78,8 +78,9 @@ html.nojs .nojs-d-none {  display: none !important; }
 }
 
 #i img {
-   object-fit: contain;
-   max-width: 100%; max-height: 100%;
+	object-fit: contain;
+	max-width: 100%; max-height: 100%;
+	width: auto; height: auto;
 }
 #i .padded {
 	
@@ -99,8 +100,8 @@ html.nojs .nojs-d-none {  display: none !important; }
 	height: 0;
 	border: none;
 	border-color: transparent;
-   
-   
+	
+	
 	border-style: solid;
 	border-width: 1em;
 	display: inline-block;
@@ -159,7 +160,7 @@ html.nojs .nojs-d-none {  display: none !important; }
 
 
 /* #i input.hides { outline: none; } */
-/* #i > :not(img) {   width: 0; height: 0; border: 1px solid transparent; margin -1px; padding: 0; text-decoration: underline; position: absolute; top:-120vh; left: -120vh; } */
+/* #i > :not(img) {	width: 0; height: 0; border: 1px solid transparent; margin -1px; padding: 0; text-decoration: underline; position: absolute; top:-120vh; left: -120vh; } */
 #i input.hides:not(:checked) + .img { display: none; }
 #i input:focus-visible { outline: none; }
 #i input:focus-visible + * { outline: auto; outline-width: 1px; outline-style: dashed; }

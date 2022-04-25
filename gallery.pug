@@ -1,8 +1,11 @@
 doctype html
-<html class="no-js">
+<html class="no-js" lang="en">
 head
-	title= ' '
+	title Galery
+	meta(http-equiv="content-type",content="text/html;charset=UTF-8;charset=utf-8")
+	meta(name="viewport",content="width=device-width,initial-scale=1,user-scalable=1")
 	link(type="text/css",rel="stylesheet",href="./gallery.css")
+	meta(name="description",content="A simple gallery example using only CSS and HTML")
 	script.
 		{
 		let i = document.documentElement.classList;
@@ -15,25 +18,26 @@ head
 
 <body>
 
-
 main
 	div.d-fixed-center-XY.p-fixed.main-fixed
-		//- - var __images__ = [ '1almey8mfrg41.png' , '74265526_p0.jpg' , 'ci0WC29.png' , 'MoonSpringDai_1980crop.jpg' , 'OHR.PRookery_EN-US2351297489_1920x1080.jpg' , 'Photo-1.jpeg' , 'Photo-3.jpeg' , 'Screenshot_20210506_223604.png' , 'Screenshot 2021-05-17 at 23-51-51 r kisslinux - what do you think about my minimal fetch scripts.png' , 'twrbl7pfear71.jpg' , 'vlcsnap-2021-02-08-21h42m53s781.png' , 'vlcsnap-2021-02-08-21h47m48s687.png' , 'vlcsnap-2021-02-09-05h31m05s022.png', 'wayland-screenshot-2021-02-07_23-34-47.png' ];
 		-
 			var images = [
-				'https://images.unsplash.com/photo-1640527651483-a205c98757a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-				'https://images.unsplash.com/photo-1640505398040-1ecf60f27391?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'
+				{width: 283,  height: 188, src:'https://images.unsplash.com/photo-1640527651483-a205c98757a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=10' },
+				{width: 1470, height: 980, src:'https://images.unsplash.com/photo-1640505398040-1ecf60f27391?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=10'  },
+				{width: 126,  height: 188, src:'https://images.unsplash.com/photo-1635873098001-9974b70faf62?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=10'  },
+				{width: 282,  height: 188, src:'https://images.unsplash.com/photo-1645438858480-78b5cdc35071?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=10' },
 			];
 		div.p-relative#i(style=`--images-length:"${images.length}"`)
-			input.p-faraway.nojs-d-none(type='radio',name='imgs',onChange="this.nextElementSibling.checked=true;this===document.activeElement&&this.nextElementSibling.focus()")
+			input.p-faraway.nojs-d-none(type='radio',name='imgs',onChange="this.nextElementSibling.checked=true;this===document.activeElement&&this.nextElementSibling.focus()",aria-hidden='true')
 			each v,k in images
-				input.hides(type='radio',name='imgs',id="image-"+k,checked=k===0)
-				label.img(for="image-"+k)
-					img(src=v)
+				input.hides(type='radio',name='imgs',id="image-"+k,checked=k===0,aria-label='for image '+(k+1))
+				label.img(for="image-"+(k+1))
+					img(loading='lazy',alt='image '+(k+1))&attributes(v)
+			script var i = document.querySelector('input:checked+label.img img'); if(i)i.loading='';
 
-			input.p-faraway(type='radio',name='imgs',onChange="this.checked=false")
-			input.p-faraway(type='radio',name='imgs',onChange="this.checked=false;this===document.activeElement&&this.previousElementSibling.focus()")
-			
+			input.p-faraway(type='radio',name='imgs',onChange="this.checked=false",aria-label='images end')
+			input.p-faraway(type='radio',name='imgs',onChange="this.checked=false;this===document.activeElement&&this.previousElementSibling.focus()",aria-hidden='true')
+
 			#when-not-selected
 				div
 					p no more images

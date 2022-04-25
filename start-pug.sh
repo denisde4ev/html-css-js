@@ -8,7 +8,7 @@ o=${o%".sh"}
 
 
 
-pug -w . -O "$(
+pug -w . "$@" -O "$(
 
 
 	printf %s\\n "{${o+
