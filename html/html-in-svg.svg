@@ -1,0 +1,13 @@
+<!-- https://stackoverflow.com/a/47300160 -->
+
+<svg xmlns="http://www.w3.org/2000/svg">
+		<foreignObject width="100" height="500"
+		requiredExtensions="http://www.w3.org/1999/xhtml">
+		<!-- XHTML content goes here -->
+		<body xmlns="http://www.w3.org/1999/xhtml">
+			<p>Here is a paragraph that requires word wrap</p>
+			<button onclick="alert(1)">button alert(1)</button>
+		</body>
+	</foreignObject>
+<svg>
+
