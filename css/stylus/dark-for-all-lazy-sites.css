@@ -1,0 +1,11 @@
+@media (prefers-color-scheme:dark) {
+	html:not([id],[class],[lang]) {
+		color-scheme: dark;
+	}
+	:root,html {
+		background: #181818
+	}
+	parsererror  {
+		color: white
+	}
+}
