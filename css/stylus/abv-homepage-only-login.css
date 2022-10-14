@@ -1,0 +1,20 @@
+@-moz-document url-prefix("abv.bg"), url-prefix("https://www.abv.bg/") {
+body > :not(#siteContent.mainWrapper) *,
+body #siteContent.mainWrapper > :not(.formContainer.x) *,
+body #siteContent.mainWrapper .formContainer.x > :not(.abv-loginLeft) *,
+body #siteContent.mainWrapper .formContainer.x .abv-loginLeft > :not(#loginForm) *,
+#promoZone
+{
+	display: none;
+}
+
+
+#loginForm {
+	position: absolute;
+	inset: 0;
+	z-index: 999999999;
+    padding: max( 50vw - 17rem , .5rem);
+    padding-top: max(40vh - 15em, 3rem);
+    background: #111
+}
+}

@@ -1,0 +1,10 @@
+@-moz-document domain("abv.bg") {
+html body#abvMail div#main div div div div[style*="inset: 35px 320px 0px 0px;"],
+html body#abvMail div#main div div div div[style*="inset: 35px 180px 0px 0px;"]{
+    inset: 35px 0 0 0 !important
+}
+
+html body {
+    background-image: none;
+}
+}
