@@ -7,6 +7,7 @@ o=${0##*/}
 o=${o%".sh"}
 
 
+# command -v pug >/dev/null 2>&- || pug() { npx pug "$@"; }
 
 pug -w . "$@" -O "$(
 
