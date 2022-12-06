@@ -1,0 +1,19 @@
+<script src="./script.js"></script>
+
+<body>
+<script language=javascript>listenOnadd(document.body)</script>
+
+<div onadd="//console.log(1);"></div>
+<h1>h1</h1>
+<hr onadd="console.log(this,document.body.contains(this)); //console.log(this);">
+<h2>h2</h2>
+
+
+<div>
+	<span onadd="console.log(this,document.body.contains(this));this.innerHTML+='text of span'">
+	<meta onadd="console.log(this,document.body.contains(this)); debugger; this.outerHTML='TEEEEEEEEXT'; console.log(2)">
+</div>
+
+
+
+</body>
