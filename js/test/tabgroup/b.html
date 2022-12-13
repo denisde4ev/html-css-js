@@ -1,0 +1,50 @@
+
+<button type=button class=button name=button value=button>button</button>
+
+<div>
+	<a href="#" tabgroup="1">Link 1</a>
+	<a href="#" tabgroup="1">Link 2</a>
+	<a href="#" tabgroup="1">Link 3</a>
+</div>
+
+<button type=button class=button name=button value=button>button</button>
+
+<script>
+
+// bad: can not relyably move focus from parrent. can not detect if Shift+Tab is being used resulting in can not escape from Shift+tab on first element.
+//document.querySelector('.tabgroup-parrent').addEventListener('focus',function(e) {
+//	this.querySelector('a[tabgroup]').focus(); // focus the first element from tab group
+//})
+
+
+var links = document.querySelectorAll('a[tabgroup="1"]').forEach((link, link_i, links) =>
+	// todo: if elements are moved/removed. this will break
+	link.addEventListener('keydown', e => {
+		// if (link !== document.activeElement) return; // not expected ever to happen
+
+		// TODO:!! find next focusable element
+		// that is outside the tab group
+		// (not necessary in parent element)
+		console.log(e.key)
+		if (e.key === 'Tab') {
+			// link.parentElement.nextElementSibling.focus(); return;
+
+			// NOTE: iterate and focus each, in order to not miss elment removed from DOM tree
+			if (e.shiftKey) {
+				if (link === links[0]) return
+				for (let i = links.length; i--;) links[i].focus();
+			} else {
+				for (let link of links) link.focus();
+			}
+			return;
+		}
+
+		// todo: loop intill current index and focus each exept current.
+		(
+			e.key === 'ArrowLeft'  ? links[link_i - 1] :
+			e.key === 'ArrowRight' ? links[link_i + 1] :
+			null
+		)?.focus();
+	})
+);
+</script>

@@ -1,0 +1,51 @@
+<!-- code by OpenAI, Q: move focus on link by arrow key press -->
+<!-- keep disclamer: You may want to modify this code to fit your specific needs, but this should give you a starting point for moving focus on arrow key press. -->
+
+<a href="#" tabindex="1">Link 1</a>
+<a href="#" tabindex="2">Link 2</a>
+<a href="#" tabindex="3">Link 3</a>
+
+
+<script>
+
+// Get all of the links in the group
+var links = document.querySelectorAll('a[tabindex]');
+
+
+document.addEventListener('keydown', function(event) {
+// Move focus to the previous element in the group
+if (event.key === 'ArrowLeft') {
+	// Find the currently focused link
+	var currentIndex = -1;
+	for (var i = 0; i < links.length; i++) {
+		if (links[i] === document.activeElement) {
+			currentIndex = i;
+			break;
+		}
+	}
+
+	// If there is a currently focused link, move focus to the previous link
+	if (0 < currentIndex) {
+		links[currentIndex - 1].focus();
+	}
+}
+
+// Move focus to the next element in the group
+if (event.key === 'ArrowRight') {
+	// Find the currently focused link
+	var currentIndex = -1;
+	for (var i = 0; i < links.length; i++) {
+		if (links[i] === document.activeElement) {
+			currentIndex = i;
+			break;
+		}
+	}
+
+	// If there is a currently focused link, move focus to the next link
+	if (-1 < currentIndex && currentIndex < links.length - 1) {
+		links[currentIndex + 1].focus();
+	}
+}
+
+});
+</script>
