@@ -1,12 +1,17 @@
 
-if (typeof D === 'undefined') {
-	var D = _=>{ // resolve only deferred promise obj
-		var d = [];
-		d.then=d.push;
-		d.resolve=(...a)=>d.forEach(f=>f(...a));
-		return d
-	}
-}
+//var D = d=>(d=[],d.then=d.push,d.resolve=a=>d.forEach(f=>f(a)),d);
+//if (!Promise.Deferred) {
+//	Promise.Deferred = function () {
+//		var res, rej;
+//		var p = new Promise((res_,rej_) => {
+//			res = res_;
+//			rej = rej_;
+//		});
+//		p.resolve = res;
+//		p.reject = rej;
+//		return p;
+//	};
+//}
 
 
 // lazy load the fn (this might get cache issues)
@@ -46,10 +51,10 @@ function textToSpeach(text, settings) {
 
 		utterance.text = text;
 
-		var d = D();
-		utterance.onend = d.resolve;
-		synth.speak(utterance);
-		return d;
+		return new Promise.resolve(res => {
+			utterance.onend = res;
+			synth.speak(utterance);
+		});
 	};
 
 	return textToSpeach(text, settings)
