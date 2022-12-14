@@ -51,7 +51,7 @@ function textToSpeach(text, settings) {
 
 		utterance.text = text;
 
-		return new Promise.resolve(res => {
+		return new Promise(res => {
 			utterance.onend = res;
 			synth.speak(utterance);
 		});
@@ -97,4 +97,5 @@ await sleep(1);
 */
 
 
-}
+
+textToSpeach // last val
