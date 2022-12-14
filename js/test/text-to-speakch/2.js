@@ -13,11 +13,9 @@
 //	};
 //}
 
+var textToSpeach = (...a) => textToSpeach._(...a);
 
-// lazy load the fn (this might get cache issues)
-function textToSpeach(text, settings) {
-	if (arguments.callee !== textToSpeach) throw new ReferenceError('fn textToSpeach has been redefined but old fn called');;
-
+textToSpeach._ = function (text, settings) {
 	// Create a new instance of the SpeechSynthesis interface
 	var synth = window.speechSynthesis;
 
@@ -39,7 +37,7 @@ function textToSpeach(text, settings) {
 	
 
 
-	textToSpeach = function (text, settings) {
+	textToSpeach = textToSpeach._ = function (text, settings) {
 		if (typeof text === 'object') {
 			settings = text;
 			text = settings.text;
