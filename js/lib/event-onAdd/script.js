@@ -1,4 +1,4 @@
-var listenOnadd = function() {
+var listenOnadd;listenOnadd = function() {
 // ref: https://github.com/erickmerchant/onappend/blob/d26d80783cf970844ed04891bea49f0be6e3f796/main.mjs#L9
 // doc: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
 
@@ -49,45 +49,40 @@ var call = (el, eventName) => {
 //
 //};
 
-var config = {
-	childList: true,
-	//attributes: true, attributeFilter: ['onadd'],
-	//characterData: true,
 
-	subtree: true
-};
-
-var mo_callback = (mutationList) => {
-	//debugger
-	for (let mutation of mutationList) {
-
-		//let traget = mutation.target; // idk: target is duplicated each time, too many calls for taget
-		//if (target.hasAttribute('onadd')) call(target, 'add');
-
-		for (let el of mutation.addedNodes) {
-			if (el.nodeType === Node.ELEMENT_NODE) {
-				//findToCall(el, 'add');
-				if (el.hasAttribute('onadd') && document.documentElement.contains(el)) call(el, 'add');
+return el => { //debugger
+	var observer = new MutationObserver(mutationList => {
+		//debugger
+		for (let mutation of mutationList) {
+	
+			//let traget = mutation.target; // idk: target is duplicated each time, too many calls for taget
+			//if (target.hasAttribute('onadd')) call(target, 'add');
+	
+			for (let el of mutation.addedNodes) {
+				if (el.nodeType === Node.ELEMENT_NODE) {
+					//findToCall(el, 'add');
+					if (el.hasAttribute('onadd') && document.documentElement.contains(el)) call(el, 'add');
+				}
 			}
-		}
-
-		for (let el of mutation.removedNodes) {
-			if (el.nodeType === Node.ELEMENT_NODE) {
-				//findToCall(el, 'remove');
-				if (el.hasAttribute('onremove') && !document.documentElement.contains(el)) call(el, 'remove');
+	
+			for (let el of mutation.removedNodes) {
+				if (el.nodeType === Node.ELEMENT_NODE) {
+					//findToCall(el, 'remove');
+					if (el.hasAttribute('onremove') && !document.documentElement.contains(el)) call(el, 'remove');
+				}
 			}
+	
 		}
+	});
 
-	}
-};
-
-return (el) => { //debugger
-	var observer = new MutationObserver(mo_callback);
-
-	observer.observe(el, config);
+	observer.observe(el, {
+		childList: true,
+		//attributes: true, attributeFilter: ['onadd'],
+		//characterData: true,
+	
+		subtree: true
+	});
 	return observer;
 };
 
 }();
-
-

@@ -15,7 +15,7 @@ function HTTP(method, url, body, a1, a2) {
 	}
 
 	var xhr = new XMLHttpRequest;
-	xhr.open(method, url||".", async)
+	xhr.open(method, url||".", async);
 
 	for (var k in props)
 		if (typeof xhr[k] === "function")
@@ -23,25 +23,41 @@ function HTTP(method, url, body, a1, a2) {
 		else
 			xhr[k] = props[k]
 
-	xhr.send(body||{});
+	//try {
+		xhr.send(body||{});
+	//}
 
 	if (async) {
-		if (window.D) { // https://github.com/denisde4ev/html-css-js/blob/master/js/defferred/deffered.js
+		if (window.D) {
+		// /^/\ https://github.com/denisde4ev/html-css-js/blob/master/js/lib/defferred/deffered.js
 			var d = xhr.d = D({callOnce:true});
 			xhr.then = d.then.bind(d);
 		}
 		if (callback || d) {
-			xhr.addEventListener('readystatechange', function (e) {
-				if (e.target.readyState !== 4) return;
-				var xhr = e.target;
-				var status = xhr.status;
-				var txt = e.target.responseText;
+			xhr.addEventListener('loadend', function (e) {
+				let status = e.target.status;
+				let txt = e.target.responseText;
 
-				if ( status === 0 || ( 200 <= status&&status < 400 ) ) {
-					if (callback) callback(null, txt, e, xhr);
+				if ( (200 <= status&&status < 400) || (status === 0 && xhr.responseText) ) {
+					if (callback) {
+						// if callback supports only 1 argument, then call it using text as first arg (and when no http error)
+						if (callback.length === 1) {
+							callback.call(this, txt, e, xhr);
+						} else {
+							callback.call(this, null, txt, e, xhr);
+						}
+					}
 					if (d) d.resolve(txt, e, xhr);
 				} else {
-					if (callback) callback(status, txt, e, xhr);
+					if (callback) {
+						if (callback.length === 1) {
+							if (d) d.reject(txt, e, xhr);
+							// console.error({callback, xhr});
+							throw new Error('callback does no handle error');
+						} else {
+							callback.call(this, status, txt, e, xhr);
+						}
+					}
 					if (d) d.reject(txt, e, xhr);
 				}
 			});
@@ -50,13 +66,13 @@ function HTTP(method, url, body, a1, a2) {
 	}
 
 	var status = xhr.status;
-	if (!(  status === 0 || ( 200 <= status&&status < 400 ) )) throw xhr;
+	if (!( ( 200 <= status&&status < 400 ) || (status === 0 && xhr.responseText) )) throw new Error('HTTP status: '+status);
 	if (a1==null&&!a2) return xhr.responseText;
 	return xhr;
 }
 
-hGet  = function (url,       a1, a2) { return HTTP('GET',  url, null, a1, a2); };
-hPost = function (url, body, a1, a2) { return HTTP('POST', url, body, a1, a2); };
+var hGet  = function (url,       a1, a2) { return HTTP('GET',  url, null, a1, a2); };
+var hPost = function (url, body, a1, a2) { return HTTP('POST', url, body, a1, a2); };
 
 // console.time('hGet')
 // and then one liner: hGet('/data1') -> sting from request
