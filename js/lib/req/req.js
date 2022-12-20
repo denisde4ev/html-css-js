@@ -1,35 +1,5 @@
 
-var req = async name => {
-	if (name.endsWith('.js')) name = name.slice(0,-3); 
-
-	if (req.loaded[name]) {
-		console.warn(new Error('lib required multiple time: '+name));
-		return req.loaded[name];
-	}
-
-	var code = await fetch(req.basepath + '/' + name + '.js');
-	return req.loaded[name] = req.evalmodule(code);
-};
-
-
-req.evalmodule = code => {
-	var _givenexports = {}, module = {exports: _givenexports};
-	var returnedValue = Function('module', code)(module);
-
-	return (
-		 _givenexports !== module.exports ||
-		 0 < Object.keys(module.exports).length
-		 	? module.exports
-		 	: returnedValue
-	);
-};
-
-req.loaded = {};
-req.basepath = {__proto__: null}; // must be defined
-
-
-
-req.get = function(name) {
+var req = function(name) {
 	//if (name.endsWith('.js')) name = name.slice(0,-3);
 	if (Object.hasOwn(this,name)) {
 		return this.loaded[name];
@@ -46,6 +16,35 @@ req.get = function(name) {
 	return req.loaded[name] = req.evalmodule(code);
 };
 
+
+req.evalmodule = code => {
+	var _givenexports = {}, module = {exports: _givenexports};
+	var returnedValue = Function('module', code)(module);
+
+	return (
+		 _givenexports !== module.exports
+		 || 0 < Object.keys(module.exports).length
+		 	? module.exports
+		 	: returnedValue
+	);
+};
+
+req.loaded = {};
+req.basepath = {__proto__: null}; // must be defined
+
+
+
+req.get = async name => {
+	if (name.endsWith('.js')) name = name.slice(0,-3); 
+
+	if (req.loaded[name]) {
+		console.warn(new Error('lib.get required multiple time: '+name));
+		return req.loaded[name];
+	}
+
+	var code = await fetch(req.basepath + '/' + name + '.js');
+	return req.loaded[name] = req.evalmodule(code);
+};
 
 
 req // last value is returned if eval
