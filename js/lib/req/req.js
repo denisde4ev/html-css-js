@@ -125,5 +125,48 @@ req.get = async name => {
 //*/
 
 
+//*
+// TODO: reimplement req.get using scrpt tag:
+
+function require(dependencies, callback) {
+  // Convert the dependencies array to a list of script elements
+  var scriptElements = dependencies.map(dep => {
+    var script = document.createElement("script");
+    script.src = dep;
+    return script;
+  });
+
+  // Create a module object for each script, with an exports property
+  var modules = scriptElements.map(() => ({ exports: {} }));
+
+  // Append the script elements to the head of the document
+  scriptElements.forEach((script, index) => {
+    script.addEventListener("load", () => {
+      // When the script has loaded, set the module object as a property on the window object
+      window.module = modules[index];
+    });
+    document.head.appendChild(script);
+  });
+  // TODO: how to avoid window.module being used by wrons scripts, and to be removed imideately after script is loaded
+
+  // Wait for all the scripts to load
+  let numScriptsLoaded = 0;
+  scriptElements.forEach(script => {
+    script.addEventListener("load", () => {
+      numScriptsLoaded++;
+      if (numScriptsLoaded === dependencies.length) {
+        // All the scripts have loaded, so execute the callback with the module objects as arguments
+        callback(...modules);
+      }
+    });
+  });
+}
+
+
+
+*/
+
+
+
 
 req // last value is returned if eval
