@@ -1,34 +1,62 @@
+
 if (!Object.hasOwn) {
 	Object.hasOwn = function(obj, prop) {
 		return Object.prototype.hasOwnProperty.call(obj, prop);
 	};
 }
 
+
+
 var req = function(name) {
 	if (name.endsWith('.js')) name = name.slice(0,-3);
-	var url = req.basepath + '/' + name + '.js';
-	if (Object.hasOwn(req.loaded,name)) {
-		return req.loaded[name];
+	if (Object.hasOwn(req.loaded, name)) {
+		let loading = req.loading[name];
+		if (!loading) {
+			return req.loaded[name];
+		} else if (loading === true) {
+			console.warn('req used on sync loading lib: ' + name + '!', new Error('')); // TODO: test + compare to nodejs require
+			return req.loaded[name];
+		} else {
+			// probably async loading, now we need to force load it
+			console.warn('req used on loading lib: ' + name, new Error(''));
+			try {
+				loading.abort();
+			} catch (e) {}
+		}
+	} else {
+		console.warn('req used on missing lib');
 	}
 
-	console.warn('req is acsessing missing lib');
 
-	var x = new XMLHttpRequest();
-	x.open('GET', url, false);
-	x.send();
-	if (x.status !== 200) throw new Error('module req HTTP status: '+x.status, { x:x, name:name });
-	var code = x.responseText;
+	try {
+		req.loading[name] = true;
+		var module = { exports: req.loaded[name] || {} };
+		req.loaded[name] = module.exports;
 
-	return req.loaded[name] = req.evalmodule(code);
+		var x = new XMLHttpRequest();
+		x.open('GET', req.basepath + '/' + name + '.js', false);
+		x.send();
+		if (x.status !== 200) throw new Error('module req HTTP status: ' + x.status, { x:x, name:name });
+		let code = x.responseText;
+
+
+		var exported = req.evalmodule(code, module);
+		req.loading[name] = false;
+		return req.loaded[name] = exported;
+	} catch (e) {
+		req.loading[name] = false;
+		console.error('failed to sync load lib: ' + name);
+		throw e;
+	}
 };
+req.loading = {}; // key is lib name, val is boolean=true|promise; true = sync load, promise = async load
 
+req.evalmodule = (code, module) => {
+	var exports = module.exports;
+	var returnedValue = Function('code, module, exports', 'return eval(code);')(code, module, exports);
 
-req.evalmodule = code => {
-	var _givenexports = {}, module = {exports: _givenexports};
-
-	var returnedValue = Function('module, code', 'return eval(code)')(module, code);
 	return (
-		 _givenexports !== module.exports
+		 exports !== module.exports // when module.exports is overwritten, note: this will breake for circular dependency
 		 || 0 < Object.keys(module.exports).length
 		 	? module.exports
 		 	: returnedValue
@@ -36,31 +64,108 @@ req.evalmodule = code => {
 };
 
 req.loaded = {};
-req.basepath = {__proto__: null}; // must be defined
+req.basepath = '/' //{__proto__: null}; // must be defined
 
 
+/*
 try {
-	/*
-	// src:
-	async name => {
-		if (name.endsWith('.js')) name = name.slice(0,-3);
-
-		if (req.loaded[name]) {
-
-
-			console.warn(new Error('lib.get required multiple time: '+name));
-			return req.loaded[name];
-		}
-
-		var code = await (await fetch(req.basepath + '/' + name + '.js')).text();
-		return req.loaded[name] = req.evalmodule(code);
-	};
-	*/
-	req.get = eval("async name=>{if(name.endsWith('.js')){name=name.slice(0,-3)}if(req.loaded[name]){console.warn(new Error('lib.get required multiple time: '+name));return req.loaded[name]}var code=await(await fetch(req.basepath+'/'+name+'.js')).text();return req.loaded[name]=req.evalmodule(code)};");
+	req.get = new Function(atob(...));
 } catch (e) {
+	// todo: better error handling
 	let _Promise = window.Promise || function(cb) { var r; cb(a => r = a); this.then = function(cb) { this.then=0; cb(r); }; };
 	req.get = name => new _Promise(r => r(req(name)));
 }
+/*/
+if (!globalThis.AbortController) throw 'missing AbortController';
+req.get = async name => {
+	if (name.endsWith('.js')) name = name.slice(0,-3); 
+
+	if (Object.hasOwn(req.loaded, name)) {
+		let loading = req.loading[name];
+		if (!loading) {
+			return req.loaded[name];
+		} else if (loading === true) {
+			console.warn('req.get used on sync loading lib: ' + name + ', this should not be possible!', new Error(''));
+			return req.loaded[name];
+		} else {
+			// probably async loading, now we need to force load it
+			console.warn('req.get used on loading lib: ' + name, new Error(''));
+			return req.loaded[name];
+		}
+	}
+
+
+	try {
+		var loading = {};
+		if (Object.hasOwn(req.loading, name)) console.error(req.loading[name], new Error(4)); // DEBUG
+		req.loading[name] = loading; // note: req.loading[name] will always be *missing prop*
+		if (Object.hasOwn(req.loaded , name)) console.error(req.loaded [name], new Error(4)); // DEBUG
+		var module = { exports: {} }; // note: req.loaded[name] here will always be *missing prop*
+		req.loaded[name] = module.exports;
+
+		var controller = new AbortController();
+		loading.controller = controller;
+		var signal = controller.signal;
+		loading.signal = signal;
+
+		var fetching = fetch(req.basepath + '/' + name + '.js', { signal });
+
+		var code = await (await fetching).text();
+
+		var exported = req.evalmodule(code);
+		req.loading[name] = false;
+
+		return req.loaded[name] = exported;
+	} catch (e) {
+		req.loading[name] = false;
+		console.error('failed to async load lib: ' + name);
+		throw e;
+	}
+};
+//*/
+
+
+//*
+// TODO: reimplement req.get using scrpt tag:
+
+function require(dependencies, callback) {
+  // Convert the dependencies array to a list of script elements
+  var scriptElements = dependencies.map(dep => {
+    var script = document.createElement("script");
+    script.src = dep;
+    return script;
+  });
+
+  // Create a module object for each script, with an exports property
+  var modules = scriptElements.map(() => ({ exports: {} }));
+
+  // Append the script elements to the head of the document
+  scriptElements.forEach((script, index) => {
+    script.addEventListener("load", () => {
+      // When the script has loaded, set the module object as a property on the window object
+      window.module = modules[index];
+    });
+    document.head.appendChild(script);
+  });
+  // TODO: how to avoid window.module being used by wrons scripts, and to be removed imideately after script is loaded
+
+  // Wait for all the scripts to load
+  let numScriptsLoaded = 0;
+  scriptElements.forEach(script => {
+    script.addEventListener("load", () => {
+      numScriptsLoaded++;
+      if (numScriptsLoaded === dependencies.length) {
+        // All the scripts have loaded, so execute the callback with the module objects as arguments
+        callback(...modules);
+      }
+    });
+  });
+}
+
+
+
+*/
+
 
 
 
