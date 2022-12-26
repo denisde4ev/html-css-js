@@ -110,6 +110,3 @@ function req(name, isasync = false) {
 if (typeof module !== 'undefined') module.exports.req = req; // pointless, but ok
 return req;
 })();
-
-
-//# sourceURL=https://cdn.jsdelivr.net/gh/denisde4ev/html-css-js/js/lib/req/__testing__req3.js
