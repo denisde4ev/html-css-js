@@ -1,11 +1,8 @@
-var req, {req} = function(){
-
 if (!Object.hasOwn) {
 	Object.hasOwn = function(obj, prop) {
 		return Object.prototype.hasOwnProperty.call(obj, prop);
 	};
 }
-
 
 var SyncPromise = f => {
 	var r;
@@ -38,6 +35,12 @@ var hGetJs = (url, isasync) => {
 		: SyncPromise(_hGetJs_resolver)
 	);
 };
+
+
+
+var req, {req} = function(){
+
+
 
 var req = function(name, loadasync = false) {
 	if (name.endsWith('.js')) name = name.slice(0,-3);
