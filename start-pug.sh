@@ -9,7 +9,13 @@ o=${o%".sh"}
 
 # command -v pug >/dev/null 2>&- || pug() { npx pug "$@"; }
 
-pug -w . "$@" -O "$(
+case ${0##*/} in
+	start-pug.sh|start-pug) pugopt='-w';;
+	build-pug.sh|build-pug) pugopt='-P';;
+	*) echo >&2 "unknown \$0=${0}"; exit 2;;
+esac
+
+pug $pugopt . "$@" -O "$(
 
 
 	printf %s\\n "{${o+
