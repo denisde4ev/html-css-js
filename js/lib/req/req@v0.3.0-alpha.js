@@ -92,6 +92,7 @@ function req(name, isasync = false) {
 		module = req.modules[name] = new req._Module(name, url, xhr);
 
 		xhr.onload = e => {
+			// todo:! check response status + response header content type
 			var code = e.target.responseText;
 			req._evalmodule(code, module);
 		};
