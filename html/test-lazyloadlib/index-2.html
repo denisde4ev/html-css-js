@@ -14,9 +14,12 @@
   };
   req.b = ( // req.basepath
   	location.hostname === 'www.denisde4ev.xyz' || location.hostname === 'denisde4ev.xyz' ?
-  		'http://www.denisde4ev.xyz/html-css-js/js/lib'
-  	: location.hostname === '' ?
-  		'https://denisde4ev.github.io/html-css-js/js/lib'
+  		'//js.denisde4ev.xyz'
+  	: location.hostname === 'denisde4ev.github.io' ?
+  		'/html-css-js/js/lib'
+  	// location.hostname === null && location.href === 'file://...'
+  	: location.hostname === 'localhost' && location.pathname.startsWith('/html/test-lazyloadlib/') ?
+  		'/js/lib'
   	:
   		'https://cdn.jsdelivr.net/gh/denisde4ev/html-css-js/js/lib'
   );
