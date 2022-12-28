@@ -43,11 +43,11 @@ script.
 		t *= defT;
 		if (t) {
 			setTimeout(_=>{
-					if (Object.hasOwn(_m, n)) { console.info('lib already loaded bef prefetch', n); return; }
+				if (Object.hasOwn(_m, n)) { console.info('lib already loaded bef prefetch', n); return; }
 				var el = document.createElement('link'), u = req.p(n).u /*TESTING: + '?v=' + Math.random()*/;
 				el.rel = 'prefetch'; el.href = u; el.as = 'script';
 				el.onload = _ => {
-					if (Object.hasOwn(_m, n)) { console.info('lib already loaded bef async scrit', n); return; }
+					if (Object.hasOwn(_m, n)) { console.info('lib already loaded bef async script', n); return; }
 					console.log('will async load script')
 					var el = document.createElement('script');
 					el.async = 1; el.src = u;

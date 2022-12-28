@@ -10,28 +10,21 @@ o=${o%".sh"}
 # command -v pug >/dev/null 2>&- || pug() { npx pug "$@"; }
 
 case ${0##*/} in
-	start-pug.sh|start-pug) pugopt='-w';;
+	start-pug.sh|start-pug) pugopt='-wP';;
 	build-pug.sh|build-pug) pugopt='-P';;
 	*) echo >&2 "unknown \$0=${0}"; exit 2;;
 esac
 
-pug $pugopt . "$@" -O "$(
-
-
-	printf %s\\n "{${o+
-
-		HTML_FILES: "$(
-			find ./[!._%]*[!~] -iname '*.html' -print0 | node -p '
-				JSON.stringify(
-					fs.readFileSync(0).toString()
-						.match(/[^\0]+/g)
-						.map(v=>v.replace(/^.\//,""))
-				)
-			'
-		)"
-
-		}}"
-
-
-)"
+pug $pugopt . "$@" -O "{
+	require,fs,path,
+	HTML_FILES: $(
+		find ./[!._%]*[!~] -iname '*.html' -print0 | node -p '
+			JSON.stringify(
+				fs.readFileSync(0).toString()
+					.match(/[^\0]+/g)
+					.map(v=>v.replace(/^.\//,""))
+			)
+		'
+	)
+}"
 
