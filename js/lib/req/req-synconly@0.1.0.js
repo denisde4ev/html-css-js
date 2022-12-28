@@ -13,7 +13,7 @@ var req = n => {
 		x = new XMLHttpRequest()
 	;
 	x.open('GET', u, false); x.send();
-	if(x.status!==200||!/^application\/javascript($|;)/i.test(x.getResponseHeader('Content-Type')))throw x;
+	if(x.status!==200||!/^(application|text)\/(x-)?javascript($|;)/i.test(x.getResponseHeader('Content-Type')))throw x;
 	Function( 'module, exports', x.responseText+'\n\n//# sourceURL=' + u +'\n' )( m, _m[n] );
 	return _m[n];
 };

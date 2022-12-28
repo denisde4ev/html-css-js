@@ -10,7 +10,7 @@ script.
 	var req=n=>{ // src: https://github.com/denisde4ev/html-css-js/raw/master/js/lib/req/req-synconly@0.1.0-alpha.js
 		if(_m[n=({u}=req.p(n)).n]){return _m[n]}
 		var u,m={exports:_m[n]={}},x=new XMLHttpRequest();x.open('GET',u,false);x.send(); // don't set request Content-Type. or it'll discard prefethed cache
-		if(x.status!==200||!/^application\/javascript($|;)/i.test(x.getResponseHeader('Content-Type')))throw new Error('bad Content-Type');
+		if(x.status!==200||!/^(application|text)\/(x-)?javascript($|;)/i.test(x.getResponseHeader('Content-Type')))throw new Error('bad Content-Type');
 		Function('module, exports','//# sourceURL='+u+'\n'+x.responseText)(m,_m[n]);
 		return _m[n];
 	};

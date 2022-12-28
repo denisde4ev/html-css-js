@@ -18,7 +18,7 @@ var _hGetJs_resolver = (r, j) => x.onloadend = e => (
 	(
 		e.target.status === 200
 		&&
-		e.target.getResponseHeader('Content-Type') === 'text/javascript'
+		/^(application|text)\/(x-)?javascript($|;)/i.test(e.target.getResponseHeader('Content-Type')
 		? r
 		: j
 	)(e)
