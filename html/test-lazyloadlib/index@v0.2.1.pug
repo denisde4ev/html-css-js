@@ -10,7 +10,7 @@ style @media(prefers-color-scheme:dark){html{color-scheme:dark}
 		(fs.readFileSync(
 			filename.replace(/\/?[^/]*$/,'')+'/../../'+
 			'js/lib/req/req-synconly@v0.1.2.js'
-		)+'').replace(/\n?^req.b = ;.*\n?/m, '\n')
+		)+'').replace(/\n?^req.b = \{__proto__:null\};.*\n?/m, '\n')
 	)
 
 script!= i
@@ -29,7 +29,6 @@ script.
 	
 	
 	if (navigator.connection) {
-		//var goodConnectionType = /ethernet|wifi|wimax/.test(navigator.connection.type)
 		var fastConnection = !/2g/.test(navigator.connection.effectiveType); // 'slow-2g' || '2g' || unef
 		defT = !navigator.connection.saveData && (
 			fastConnection ? 6e3 : 0.5e3
@@ -38,13 +37,14 @@ script.
 		defT = 2e3;
 	}
 	
+	// TODO: add _l as lazy loaded modules.exports. `e = _m[n] || {}` use replace _m with _l
 	var l = function prefetch_lazyfn(n, F, t) {
 		if (t === void 0) t=1;
 		t *= defT;
 		if (t) {
 			setTimeout(_=>{
 				if (Object.hasOwn(_m, n)) { console.info('lib already loaded bef prefetch', n); return; }
-				var el = document.createElement('link'), u = req.p(n).u /*TESTING: + '?v=' + Math.random()*/;
+				var el = document.createElement('link'), u = req.p(n) /*TESTING: + '?v=' + Math.random()*/;
 				el.rel = 'prefetch'; el.href = u; el.as = 'script';
 				el.onload = _ => {
 					if (Object.hasOwn(_m, n)) { console.info('lib already loaded bef async script', n); return; }

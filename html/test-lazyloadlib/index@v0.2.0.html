@@ -27,7 +27,6 @@
   
   
   if (navigator.connection) {
-  	//var goodConnectionType = /ethernet|wifi|wimax/.test(navigator.connection.type)
   	var fastConnection = !/2g/.test(navigator.connection.effectiveType); // 'slow-2g' || '2g' || unef
   	defT = !navigator.connection.saveData && (
   		fastConnection ? 6e3 : 0.5e3
