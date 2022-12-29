@@ -2,8 +2,8 @@
 // finally a jQuery alternative for speed and small code size
 
 // browser retur value prediction:
-// firefox: this file is entirely dediceded to making firefox prediction
-// and it f**inng works. even `q('*').prop('innerHTML')` works (the one that does not work in chrome even from this file!)
+// chrome: mostly works `q.one('*').html()` but for some reason `.prop('innerHTML')` does not
+// firefox: does not work at all. setting `this._ = ..` stops prediction
 
 // for many fns this._ might be null, just leave native error
 
@@ -14,12 +14,12 @@ Object.defineProperties(q.prototype, {
 	'length': { get: function () { return this._.length; } },
 });
 
-Object.assign(q.prototype, {
-	[Symbol.iterator]() { ////
+{
+	if (typeof Symbol !== 'undefined' && Symbol.iterator) q.prototype[Symbol.iterator] = function () { ////
 		return this._[Symbol.iterator](); ////
-	}, ////
+	}; ////
 
-	f(fn) {
+	q.prototype.f = function f(fn) {
 		var a = this._;
 		if ( a.forEach ) {
 			a.forEach(fn);
@@ -27,44 +27,45 @@ Object.assign(q.prototype, {
 			//for ( let i; i < a.length; ++i ) {
 			//	fn(el, i, a);
 			//}
-			for (let el of a) fn(el);
+			//for (var el of a) fn(el); // FF 24 but dos not work on resent otter browser
+			Array.prototype.forEach.call(a,fn); // FF 24 but dos not work on resent otter browser
+			
 		}
 		return this;
 	},
 
-	prop(k, v) {
+	q.prototype.prop = function prop(k, v) {
 		if (arguments.length <= 1) return this._[0][k]; // no null check, leave native error
 		return this.f(el => el[k] = v);
 	},
-	attr(k, v) {
+	q.prototype.attr = function attr(k, v) {
 		if (arguments.length <= 1) return this._[0].getAttribute(k); // no null check, leave native error
 		return this.f(el => el.setAttribute(k, v));
 	},
 
-	on(type, fn, opt) { ////
+	q.prototype.on = function on(type, fn, opt) { ////
 		return this.f(el => el.addEventListener(event, fn, opt)); ////
 	}, ////
-	off(type, fn, opt) { ////
+	q.prototype.off = function off(type, fn, opt) { ////
 		return this.f(el => el.removeEventListener(event, fn, opt)); ////
 	}, ////
 
 
 	// better use: .prop('innerHTML', 'str...')
-	html(H) { ////
+	q.prototype.html = function html(H) { ////
 		if (H == null) return this._[0].innerHTML; ////
 		return this.f(el => el.innerHTML = H); ////
 	}, ////
 
-	addClass(name) { ////
+	q.prototype.addClass = function addClass(name) { ////
 		return this.f(el => el.classList.add(name)); ////
 	}, ////
-	removeClass(name) { ////
+	q.prototype.removeClass = function removeClass(name) { ////
 		return this.f(el => el.classList.remove(name)); ////
 	}, ////
 	// consider `toggleclass(name, bool)` with 2 args
 
-
-});
+0}
 
 q.prototype.each = q.prototype.q;
 //q.prototype.delClass = q.prototype.removeClass;
@@ -75,7 +76,7 @@ q.one = function(A, B) { return q( (B||document).querySelector(A) ); }
 function q(A, B) {
 	if (!(this instanceof q)) return new q(A, B);
 
-	var _ = (
+	this._ = (
 		typeof A === 'string' ? (
 			A[0] === '<' ? (
 				B = q.new('q'),
@@ -92,14 +93,6 @@ function q(A, B) {
 			) : null
 		) : null
 	);
-
-	// FF code predictoin stops when using:
-	// * `Object.assign`
-	// * `with()` but sometimes
-	// * `this.setval = 1`
-	// * `document.createElement` does not work at all
-
-	return Object.create(q.prototype, { _: { value: _ } });
 };
 
 if (typeof module === 'object') {

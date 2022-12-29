@@ -21,7 +21,7 @@ pug $pugopt . "$@" -O "{
 		find ./[!._%]*[!~] -iname '*.html' -print0 | node -p '
 			JSON.stringify(
 				fs.readFileSync(0).toString()
-					.match(/[^\0]+/g)
+					.match(/[^\0]+/g).sort()
 					.map(v=>v.replace(/^.\//,""))
 			)
 		'

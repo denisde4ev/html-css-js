@@ -100,29 +100,12 @@
  	);
 +
 +	// FF code predictoin stops when using:
-+	// * `Object.create`
 +	// * `Object.assign`
 +	// * `with()` but sometimes
 +	// * `this.setval = 1`
 +	// * `document.createElement` does not work at all
 +
-+	// badcode to make firefox completion work:
-+	return {
-+		_: _,
-+
-+		0: _[0],
-+
-+		constructor: q,
-+		//Object.keys(q.prototype).join('\n')
-+		f: q.prototype.f,
-+		prop: q.prototype.prop,
-+		attr: q.prototype.attr,
-+		on: q.prototype.on,
-+		off: q.prototype.off,
-+		html: q.prototype.html,
-+		addClass: q.prototype.addClass,
-+		removeClass: q.prototype.removeClass,
-+	};
++	return Object.create(q.prototype, { _: { value: _ } });
  };
  
  if (typeof module === 'object') {
