@@ -32,14 +32,16 @@ var textToSpeach = function init(text, settings) {
 			text = settings.text;
 		}
 
-		if (
-			Object.hasOwn(settings, 'voice') &&
-			!(settings.voice instanceof SpeechSynthesisVoice) &&
-		0) {
-			// NOTE:! unpure fn textToSpeach! changing external obj
-			settings.voice = speechSynthesis.getVoice(settings.voice);
+		if (settings) {
+			if (
+				Object.hasOwn(settings, 'voice') &&
+				!(settings.voice instanceof SpeechSynthesisVoice) &&
+			0) {
+				// NOTE:! unpure fn textToSpeach! changing external obj
+				settings.voice = speechSynthesis.getVoice(settings.voice);
+			}
+			Object.assign(utterance, settings);
 		}
-		Object.assign(utterance, settings);
 
 		if (!text) return utterance;
 		utterance.text = text;
