@@ -258,7 +258,7 @@
 6	var d;
 8	var d;
 4	if (async) {
-4		if (window.D) { // https://github.com/denisde4ev/html-css-js/blob/master/js/defferred/deffered.js
+4		if (window.D) { // https://github.com/denisde4ev/html-css-js/blob/master/js/lib/deferred/deferred.js
 4			var d = xhr.d = D({callOnce:true});
 4			xhr.then = d.then.bind(d);
 4		}
@@ -529,8 +529,8 @@
 5
 5
 5
-5// import D from /assets/js/defferred.js;
-5HTTP.get('/assets/js/defferred.js', true).d.then(function (t) {
+5// import D from /js/lib/deferred/deferred.js;
+5HTTP.get('/assets/js/deferred.js', true).d.then(function (t) {
 5	console.info(t)
 5})
 
@@ -556,15 +556,15 @@
 7if (typeof _debug_httplib !== 'undefined') {
 8if (typeof _debug_httplib !== 'undefined') {
 6if (typeof _debug_httplib !== 'undefined') {
-7	// import D from /assets/js/defferred.js;
-8	// import D from /assets/js/defferred.js;
-6	// import D from /assets/js/defferred.js;
+7	// import D from /assets/js/deferred.js;
+8	// import D from /assets/js/deferred.js;
+6	// import D from /assets/js/deferred.js;
 7	if (typeof D === 'undefined') {
 8	if (typeof D === 'undefined') {
 6	if (typeof D === 'undefined') {
-7		D = Function('D', hGet('/assets/js/defferred.js') + '\nreturn D;')();
-8		D = Function('D', hGet('/assets/js/defferred.js') + '\nreturn D;')();
-6		D = Function('D', hGet('/assets/js/defferred.js') + '\nreturn D;')();
+7		D = Function('D', hGet('/assets/js/deferred.js') + '\nreturn D;')();
+8		D = Function('D', hGet('/assets/js/deferred.js') + '\nreturn D;')();
+6		D = Function('D', hGet('/assets/js/deferred.js') + '\nreturn D;')();
 7	}
 8	}
 6	}
@@ -574,9 +574,9 @@
 7	if (typeof D !== 'undefined') {
 8	if (typeof D !== 'undefined') {
 6	if (typeof D !== 'undefined') {
-7	hGet('/assets/js/defferred.js', true).d.then(function (t) {
-8	hGet('/assets/js/defferred.js', true).d.then(function (t) {
-6	hGet('/assets/js/defferred.js', true).d.then(function (t) {
+7	hGet('/assets/js/deferred.js', true).d.then(function (t) {
+8	hGet('/assets/js/deferred.js', true).d.then(function (t) {
+6	hGet('/assets/js/deferred.js', true).d.then(function (t) {
 7		console.info(t)
 8		console.info(t)
 6		console.info(t)
@@ -627,7 +627,7 @@
 4	xhr.send(body||{});
 4
 4	if (async) {
-4		if (window.D) { // https://github.com/denisde4ev/html-css-js/blob/master/js/defferred/deffered.js
+4		if (window.D) { // https://github.com/denisde4ev/html-css-js/blob/master/js/deferred/deferred.js
 4			var d = xhr.d = D({callOnce:true});
 4			xhr.then = d.then.bind(d);
 4		}

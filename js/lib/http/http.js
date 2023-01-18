@@ -29,7 +29,7 @@ function HTTP(method, url, body, a1, a2) {
 
 	if (async) {
 		if (window.D) {
-		// /^/\ https://github.com/denisde4ev/html-css-js/blob/master/js/lib/defferred/deffered.js
+		// /^/\ https://github.com/denisde4ev/html-css-js/blob/master/js/lib/deferred/defered.js
 			var d = xhr.d = D({callOnce:true});
 			xhr.then = d.then.bind(d);
 		}
