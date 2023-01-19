@@ -1,0 +1,27 @@
+#!/usr/bin/env pp.sh
+
+// TODO: implement pp.js and then replace pp.sh
+
+
+var DATA = JSON.parse(JSONView.json.textContent);
+!| case ${FIX_OBJ_TO_ARRAY+x} in x)
+DATA = (DATA=>{ // optianall fix: (recursively) if (obj that has only array indexes as keys) then convert it to array
+	var fn = function(d) {
+		if (typeof d==='object'&&d!==null) {
+			var d_keys=Object.keys(d);
+			if (d_keys.every(a=>0<=a) || d_keys.length === 0 ) {
+				d=Object.assign([],d)
+			}
+			for(let k in d){
+				d[k]=fn(d[k])
+			}
+		}
+		return d;
+	}
+	return fn(DATA);
+})(DATA);
+!! esac
+!!
+!| case ${LOG_AFTER_PARSE+x} in x)
+console.log('DATA=',DATA)
+!! esac
