@@ -43,27 +43,27 @@ Object.defineProperties(q.prototype, {
 		return this.f(el => el.setAttribute(k, v));
 	},
 
-	q.prototype.on = function on(type, fn, opt) { ////
-		return this.f(el => el.addEventListener(event, fn, opt)); ////
+	q.prototype.on = function on(t, fn, opt) { ////
+		return this.f(el => el.addEventListener(t, fn, opt)); ////
 	}, ////
-	q.prototype.off = function off(type, fn, opt) { ////
-		return this.f(el => el.removeEventListener(event, fn, opt)); ////
+	q.prototype.off = function off(t, fn, opt) { ////
+		return this.f(el => el.removeEventListener(t, fn, opt)); ////
 	}, ////
 
 
 	// better use: .prop('innerHTML', 'str...')
-	q.prototype.html = function html(H) { ////
-		if (H == null) return this._[0].innerHTML; ////
-		return this.f(el => el.innerHTML = H); ////
+	q.prototype.html = function html(h) { ////
+		if (h == null) return this._[0].innerHTML; ////
+		return this.f(el => el.innerHTML = h); ////
 	}, ////
 
-	q.prototype.addClass = function addClass(name) { ////
-		return this.f(el => el.classList.add(name)); ////
+	q.prototype.addClass = function addClass(n) { ////
+		return this.f(el => el.classList.add(n)); ////
 	}, ////
-	q.prototype.removeClass = function removeClass(name) { ////
-		return this.f(el => el.classList.remove(name)); ////
+	q.prototype.removeClass = function removeClass(n) { ////
+		return this.f(el => el.classList.remove(n)); ////
 	}, ////
-	// consider `toggleclass(name, bool)` with 2 args
+	// consider `toggleclass(n, bool)` with 2 args
 
 0}
 

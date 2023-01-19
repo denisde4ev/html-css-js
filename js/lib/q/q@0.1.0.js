@@ -41,27 +41,27 @@ Object.assign(q.prototype, {
 		return this.f(el => el.setAttribute(k, v));
 	},
 
-	on(type, fn, opt) { ////
-		return this.f(el => el.addEventListener(event, fn, opt)); ////
+	on(t, fn, opt) { ////
+		return this.f(el => el.addEventListener(t, fn, opt)); ////
 	}, ////
-	off(type, fn, opt) { ////
-		return this.f(el => el.removeEventListener(event, fn, opt)); ////
+	off(t, fn, opt) { ////
+		return this.f(el => el.removeEventListener(t, fn, opt)); ////
 	}, ////
 
 
 	// better use: .prop('innerHTML', 'str...')
-	html(H) { ////
-		if (H == null) return this._[0].innerHTML; ////
-		return this.f(el => el.innerHTML = H); ////
+	html(h) { ////
+		if (h == null) return this._[0].innerHTML; ////
+		return this.f(el => el.innerHTML = h); ////
 	}, ////
 
-	addClass(name) { ////
-		return this.f(el => el.classList.add(name)); ////
+	addClass(n) { ////
+		return this.f(el => el.classList.add(n)); ////
 	}, ////
-	removeClass(name) { ////
-		return this.f(el => el.classList.remove(name)); ////
+	removeClass(n) { ////
+		return this.f(el => el.classList.remove(n)); ////
 	}, ////
-	// consider `toggleclass(name, bool)` with 2 args
+	// consider `toggleclass(n, bool)` with 2 args
 
 
 });

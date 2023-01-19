@@ -1,0 +1,82 @@
+<style>
+.line {
+	width: .2em;
+	height: 2em;
+	background-color: black;
+	position: absolute;
+	visibility: hidden;
+}
+</style>
+
+
+<div class="line"></div>
+<div class="line"></div>
+
+
+<script>
+//debugger 
+
+var maxOffset = 5;
+var lines = document.querySelectorAll('.line');
+
+
+/*
+lines.forEach(line => {
+debugger
+	var x = Math.floor(Math.random() * (window.innerWidth - 2 * maxOffset)) + maxOffset;
+	var y = window.innerHeight - 2;
+	line.style.left = x + 'px';
+	line.style.top = y + 'px';
+
+	var centerX = window.innerWidth / 2;
+	var centerY = window.innerHeight / 2;
+	var distance = Math.sqrt(Math.pow(centerX - x, 2) + Math.pow(centerY - y, 2));
+	var duration = distance / 100;
+
+	line.style.transition = `top ${duration}s, left ${duration}s`;
+	line.style.top = centerY + 'px';
+	line.style.left = centerX + 'px';
+});
+
+lines.forEach(line => {
+	line.addEventListener('transitionend', () => {
+		alert(1);
+	});
+});
+*/
+
+animation = lines[0].animate(
+	[
+		// keyframes
+		{ width: '100px', height: '100px', visibility: 'visible' },
+		{ width: '200px', height: '200px', visibility: 'visible' }
+	],
+	{
+		// timing options
+		duration: 1000, // 1 second
+		easing: 'ease-in-out',
+		iterations: 2 // repeat the animation 2 times
+	}
+);
+
+
+
+
+console.log(animation.playState); // prints "running" or "paused"
+console.log(animation.currentTime); // prints the current time in the animation
+
+
+animation.addEventListener('start', () => {
+	console.log('Animation started');
+});
+animation.addEventListener('end', () => {
+	console.log('Animation ended');
+});
+animation.addEventListener('iteration', () => {
+	console.log('Animation iteration');
+});
+
+
+
+</script>
+
