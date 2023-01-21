@@ -15,7 +15,8 @@ case ${0##*/} in
 	*) echo >&2 "unknown \$0=${0}"; exit 2;;
 esac
 
-pug $pugopt . "$@" -O "{
+case $# in 0) set -- .; esac
+pug $pugopt "$@" -O "{
 	require,fs,path,
 	HTML_FILES: $(
 		find ./[!._%]*[!~] -iname '*.html' -print0 | node -p '

@@ -83,3 +83,5 @@ Object.assign( D.prototype, {
 		return this._cal(this._errbacks, arguments);
 	}
 });
+
+if (typeof module !== 'undefined') module.exports.D=D;
