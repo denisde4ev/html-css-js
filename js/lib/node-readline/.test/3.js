@@ -1,32 +1,44 @@
 #!/usr/bin/env node
 
-// use at own risk. I have not testend if wosk well.
-// I just got it to work and started using it.
+// use at own risk.
+// I have not testend if wosk well.
+// I just got it to work
+// and started using it.
 
-// NOTE: IDK what will happen if you call Readline twice and I'll probably never test it.
+// NOTE: if you call Readline twice
+//  IDK what will happen
+//  and I'll probably never test it.
 
 // my goal is to not use async/await.
-// because await sometimes misses event loop and gets executed in next event loop:
-//  that means if all 'data'events happen before await gets executed once
-//  I have to store entire data untill next loop
-//  and sometimes this means entire data, so the point of using promises loses its purpose.
+// because await sometimes misses event loop
+// and gets executed in next event loop:
+//  that means if all 'data'events
+//  happen before await gets executed once.
+//  I have to store entire data
+//  untill next loop
+//  and sometimes this means entire data,
+//  so the point of using promises
+//  loses its purpose.
 
 
-var FunctionGenerator = globalThis.FunctionGenerator || {*_(){}}._.constructor;
+var FunctionGenerator =
+ globalThis.FunctionGenerator
+ || {*_(){}}._.constructor
+;
 
 // args: $1 = FunctionGenerator = *fn(){} / options = { iterator: (*fn(){})() -> {value: any, done: true/false} }
-var Readline = module.exports.Readline = function($1) {
-
-	if (!(this instanceof Readline)) return new Readline(Fg);
+var Readline = function($1) {
+	if (!(this instanceof Readline)) return new Readline($1);
 
 	process.stdin.setEncoding('utf8');
 
-	// It = functionGenerator (sync, but pauses are controlled by Readline => weird async/await alternative with no event loop misses)
 	var it_data  = {__proto__:null}; // obj but faster
 	this.data = it_data; // just expose
 	it_data.line = {__proto__:null}; // init with non stringable obj
 	it_data.nl   = {__proto__:null}; // init with non stringable obj
 
+	// It = functionGenerator
+	// (sync, but pauses are controlled by Readline => weird async/await alternative with no event loop misses)
 	var it, opt;
 	if ($1 instanceof FunctionGenerator) {
 		it = $1(this, it_data);
