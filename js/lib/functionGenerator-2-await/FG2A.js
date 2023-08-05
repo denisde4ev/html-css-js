@@ -65,8 +65,8 @@ if (typeof module !== 'undefined') module.exports.FG2A = FG2A;
 
 
 
-if (false) // test:
-(log=>{
+if (0) // test:
+void function test_1(log) {
 	var promise = D();
 	// test case1:
 	//log('-resolving promise'); promise.resolve('start with resolved promise');
@@ -101,7 +101,7 @@ if (false) // test:
 	//setTimeout(_=> void log('-resolving promise') || promise.resolve('after 5 seconds'), 5e3);
 
 	log('-main end');
-})(console.log);
+}(console.log);
 // # Output:
 //
 // ## case 1: 'start with resolved promise'
@@ -148,8 +148,8 @@ if (false) // test:
 
 
 
-if (false) // test2: example using `yield*`:
-(log=>{
+if (0) // test2: example using `yield*`:
+void function(log) {
 	var delay = (str, t) => new Promise(r => setTimeout(_ => r(str), t));
 	var fn_promise = FG2A(function* outer() {
 		function* inner() {
@@ -167,7 +167,7 @@ if (false) // test2: example using `yield*`:
 		log( yield delay('outer end', 1e3) );
 	});
 	log('-main end');
-})(console.log);
+}(console.log);
 // Output:
 //```
 //-main end
