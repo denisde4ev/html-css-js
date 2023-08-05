@@ -1,0 +1,37 @@
+<script src=./1.js><--
+
+doctype html
+html
+	head
+		title My Homepage
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+		link(rel='stylesheet', href='/styles.css')
+		base#base
+		script.
+			void function() { var i = document.createElement('base'); }();
+	body
+		header
+			h1 My Homepage
+			nav
+				ul
+					li
+						a(href='/') Home
+					li
+						a(href='/about') About
+					li
+						a(href='/contact') Contact
+		main
+			section
+				h2 Welcome to my homepage!
+				p This is a sample homepage written in Pug.js. Feel free to modify it to suit your needs.
+			section
+				h2 Recent Blog Posts
+				ul
+					li
+						a(href='/blog/post-1') Post 1
+					li
+						a(href='/blog/post-2') Post 2
+					li
+						a(href='/blog/post-3') Post 3
+		footer
+			p Copyright © TODAY My Homepage

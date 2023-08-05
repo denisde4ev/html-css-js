@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Selection Test</title>
+	<style>
+		button {
+			margin-right: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Select Some Text</h1>
+	<div>
+	<textarea style=width:2in;height:3in>
+Lorem dolor sit amet
+<u>consectetur</u> <i>adipiscing</i> <u>elit</u>
+vel
+	</textarea>
+	</div>
+	<button onclick="
+// Get the current selection
+const selection = window.getSelection();
+
+// Get the start and end nodes of the selection
+const startNode = selection.anchorNode;
+const endNode = selection.focusNode;
+
+// Get the start and end offsets of the selection
+const startOffset = selection.anchorOffset;
+const endOffset = selection.focusOffset;
+
+// Set the new start and end offsets
+const newStartOffset = startOffset + 1;
+const newEndOffset = endOffset + 1;
+
+// Set the new selection range
+selection.setBaseAndExtent(startNode, newStartOffset, endNode, newEndOffset);
+	">mv</button>
+	</body>
+</html>

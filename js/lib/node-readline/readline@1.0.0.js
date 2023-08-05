@@ -64,24 +64,28 @@ function Readline(input, opt) {
 }
 
 
-if (false) // test: `nl` from Linux coroutils
-if (require.main === module) {
-	var i = 0;
-	new Readline(process.stdin, {
-		callOnEmptyEOF: false,
-		onLine(line, nl) {
-			//if (!d.nl && !d.line) return; // no need to check when `callOnEmptyEOF=true`
-			i++;
+if (typeof module !== 'undefined') { // test: `nl` from Linux coroutils
+	if (require.main !== module) {
+		module.exports.Readline = Readline;
+	} else {
+		var i = 0;
+		new Readline(process.stdin, {
+			callOnEmptyEOF: false,
+			onLine(line, nl) {
+				//if (!d.nl && !d.line) return; // no need to check when `callOnEmptyEOF=true`
+				i++;
 
-			process.stdout.write( i + ' ' + line  + nl );
+				process.stdout.write( i + ' ' + line  + nl );
 
-			//if (!d.nl) return;
-		},
-		onEnd() {
-			if (i === 0) {
-				// stderr note:
-				process.stderr.write('(empty input)\n');
-			}
-		},
-	});
+				//if (!d.nl) return;
+			},
+			onEnd() {
+				if (i === 0) {
+					// stderr note:
+					process.stderr.write('(empty input)\n');
+				}
+			},
+		});
+	}
 }
+Readline
