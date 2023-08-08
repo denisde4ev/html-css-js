@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>formSubmit test</title>
+  <link rel="stylesheet" type="text/css" href="./style.css"/>
+</head>
+<body>
+  <form class="formSubmit" id="loginForm" method="POST" data-action="https://httpbin.org/post" action="javascript:alert(123)" enctype="application/x-www-form-urlencoded" autocomplete="on" data-formSubmit-done="console.log('done', data)">
+    <div class="m-b-3">
+      <label>Username
+        <input id="username" name="username" type="text" required="required" autocomplete="username" autofocus="autofocus"/>
+      </label>
+    </div>
+    <div class="m-b-3">
+      <label>Password
+        <input id="password" name="password" type="password" required="required" autocomplete="current-password"/>
+      </label>
+    </div>
+    <hr style="margin-inline:0"/>
+    <div class="btns">
+      <button type="submit">Login</button>
+    </div>
+  </form>
+  <output id="loginForm_output">
+    <pre></pre>
+  </output>
+  <!-- scripts-->
+  <script src="./script.js"></script>
+</body></html>
