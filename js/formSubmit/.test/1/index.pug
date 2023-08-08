@@ -1,0 +1,66 @@
+doctype html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
+<html xmlns="http://www.w3.org/1999/xhtml">
+head
+	meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+	title formSubmit test
+	link(rel="stylesheet" type="text/css" href="./style.css")
+body
+	form#loginForm.formSubmit(
+		method='POST' 
+		data-action=(
+			/*
+			'https://httpbin.org/post'
+			'https://NONEXISTING.DOMAIN/NOWHERE'
+			*/
+			'https://httpbin.org/post/test'
+		)
+		action='javascript:alert(123)'
+
+		enctype='application/x-www-form-urlencoded'
+		autocomplete='on'
+
+		data-formSubmit-done="console.log('done', data)"
+	)
+
+		div.m-b-3
+			label
+				| Username
+				input#username(
+					name='username'
+					type='text' required autocomplete='username' 
+					autofocus
+				)
+
+		div.m-b-3
+			label
+				| Password
+				input#password(
+					name='password'
+					type='password' required autocomplete='current-password'
+				)
+
+		//- div.m-b-3
+			label
+				input#accept(
+					name='accept'
+					type='checkbox' required autocomplete='off'
+				)
+				| Accept?
+
+		//- br // does not work with br...
+		//- div(style="flex-basis: 1em;")
+		hr(style="margin-inline:0")
+
+		div.btns
+			button(type='submit') Login
+			//- button(type='submit',name="super",value="1") Login+#[i super]
+			//- button(type='reset') Reset
+
+
+	output#loginForm_output
+		pre
+
+
+	// scripts
+	script(src="./script.js")
+</html>
