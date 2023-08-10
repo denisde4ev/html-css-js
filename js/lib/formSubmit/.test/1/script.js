@@ -1,6 +1,21 @@
+void function() {
 /*
 for now does not add loading/(disabled while sibmitting) state to button(s)
 */
+
+var outputEl = document.getElementById('loginForm_output');
+outputEl.parentElement.childNodes.forEach(e=>{ if (e.nodeType === Node.TEXT_NODE) e.remove() }); outputEl.innerHTML = '';
+function log(...args) {
+	console.log(...args);
+
+	outputEl.insertAdjacentText('beforeend',
+		args.map(v =>
+			JSON.stringify(v, null, '\t') // TODO: convert `Response` obj to json
+		).join() +'\n'
+	);
+}
+
+
 
 document.addEventListener('submit', e => {
 	var form = e.target;
@@ -26,12 +41,14 @@ document.addEventListener('submit', e => {
 		},
 		/*redirect - How to handle a redirect response*/
 	}).finally(function (_) {
-		console.info('finally', arguments.length );
+		log('finally', arguments.length );
 	}).then(function (res) {
-		console.info('then', arguments.length, res );
+		log('then', arguments.length, res );
 	}).catch(function (res) {
-		console.info('catch', arguments.length, res );
+		log('catch', arguments.length, res );
 	});
 
 	e.preventDefault();
 });
+
+}();

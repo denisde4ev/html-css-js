@@ -55,3 +55,12 @@ button[type="reset"]:hover {
 }
 
 .m-b-3 { margin-bottom: .3rem; }
+
+
+output {
+	border: 1px solid;
+	display: block;
+	min-height: 10em;
+	padding: .5em .3em;
+	padding-bottom: 1.5em;
+}
