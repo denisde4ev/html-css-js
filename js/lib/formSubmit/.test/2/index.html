@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>formSubmit test</title>
+  <link rel="stylesheet" type="text/css" href="./style.css"/>
+</head>
+<body>
+  <div id="loginWrap">
+    <div id="whenLogged" hidden="1">
+      <!--a(href=".") Logout (just reloads the page)-->
+      <button type="button" onclick="loginForm.hidden = 1; whenLogged.hidden = 0;">Logout</button>
+    </div>
+    <form class="formSubmit" id="loginForm" method="POST" action="/login" enctype="application/x-www-form-urlencoded" autocomplete="on" data-formSubmit-done="
+				/* TODO/implement: !!! in next test run this js !!! */
+				console.log('done', data);
+				loginForm.hidden = 1;
+				whenLogged.hidden = 0;
+			">
+      <div class="m-b-3">
+        <label>Username
+          <input id="username" name="username" value="foo" type="text" required="required" autocomplete="username" autofocus="autofocus"/>
+        </label>
+      </div>
+      <div class="m-b-3">
+        <label>Password
+          <input id="password" name="password" value="123" type="password" required="required" autocomplete="current-password"/>
+        </label>
+      </div>
+      <hr style="margin-inline:0"/>
+      <div class="btns">
+        <button type="submit">Login</button>
+      </div>
+    </form>
+  </div>
+  <pre>
+    <button id="loginForm_output_reset" type="button" onclick="loginForm_output.innerHTML=''">&times; Reset output</button>
+    <output id="loginForm_output"></output></pre>
+  <!-- scripts-->
+  <script src="./script.js"></script>
+</body></html>
