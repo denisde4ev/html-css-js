@@ -1,10 +1,11 @@
 void function() {
 /*
-for now does not add loading/(disabled while sibmitting) state to button(s)
+needs feature: for now does not add loading/(disabled while sibmitting) state to button(s)
 */
 
+
 var outputEl = document.getElementById('loginForm_output');
-outputEl.parentElement.childNodes.forEach(e=>{ if (e.nodeType === Node.TEXT_NODE) e.remove() }); outputEl.innerHTML = '';
+outputEl.parentElement.childNodes.forEach(e => { if (e.nodeType === Node.TEXT_NODE) e.remove() }); outputEl.innerHTML = '';
 function log(...args) {
 	console.log(...args);
 
@@ -13,7 +14,7 @@ function log(...args) {
 			JSON.stringify(v, null, '\t') // TODO: convert `Response` obj to json
 		).join() +'\n'
 	);
-}
+};
 
 
 

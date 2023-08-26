@@ -1,0 +1,111 @@
+doctype html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
+<html xmlns="http://www.w3.org/1999/xhtml">
+head
+	meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+	title formSubmit test
+	link(rel="stylesheet" type="text/css" href="./style.css")
+
+body
+	div#loginWrap
+		div#whenLogged(hidden=1)
+			div#userInfo
+				| Hello, #[span(data-text="user.name") ?]!
+			//a(href=".") Logout (just reloads the page)
+			button(
+				type="button"
+				onclick="loginForm.hidden = 0; whenLogged.hidden = 1;"
+			) Logout
+		form#loginForm.formSubmit(
+			method='POST'
+			data-action=(
+				/*
+				'https://httpbin.org/post/test'
+				'https://NONEXISTING.DOMAIN/NOWHERE'
+				'https://httpbin.org/post'
+				false / *disable the attribute* /
+				*/
+				'/login'
+			)
+			action=(
+				/*
+				'/login'
+				*/
+				'javascript:alert("error: js onsubmit/formSubmit() failed!")'
+			)
+
+			enctype=(
+				/*
+				note: 'application/json' is not supported by HTMLForm enctype
+				*/
+				/*
+				'text/plain'
+				*/
+				'application/x-www-form-urlencoded'
+			)
+			autocomplete="on"
+
+			data-formSubmit-done=(`
+				/* TODO/implement: !!! in next test run this js !!! */
+				/* if (!data.success) { */
+				/* 	return false; // todo: show error */
+				/* } else { */
+					data = data.data;
+					/* note: for now expects no error */
+				/* } */
+
+				loginForm_output_writeLog('done', data);
+				loginForm.hidden = 1;
+				whenLogged.hidden = 0;
+
+				(window._data||={}).user = data.user;
+				document.querySelectorAll('[data-text="user.name"]').forEach(el=>
+					el.textContent = data.user.name
+				);
+			`)
+		)
+
+			div.m-b-3
+				label
+					| Username
+					input#username(
+						name="username"
+						value="foo"
+						type="text" required autocomplete="username"
+						autofocus
+					)
+
+			div.m-b-3
+				label
+					| Password
+					input#password(
+						name="password"
+						value="123"
+						type="password" required autocomplete="current-password"
+					)
+
+			//- div.m-b-3
+			//-	label
+			//-		input#accept(
+			//-			name="accept"
+			//-			type="checkbox" required autocomplete="off"
+			//-		)
+			//-		| Accept?
+
+			//- br // does not work with br...
+			//- div(style="flex-basis: 1em;")
+			hr(style="margin-inline:0")
+
+			div.btns
+				button(type="submit") Login
+				//- button(type="submit",name="super",value="1") Login+#[i super]
+				//- button(type="reset") Reset
+
+
+	pre
+		button#loginForm_output_reset(type="button",onclick="loginForm_output.innerHTML=''") &times; Reset output
+		output#loginForm_output
+
+
+	// scripts
+	script(src="./script.js")
+</html>
