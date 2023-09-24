@@ -1,0 +1,93 @@
+
+
+:root { /* css rules otside id nesting are least important "layer" (as the @layer should have worked, but they broke it) */
+
+	*, :before, :after { box-sizing: border-box; }
+
+	body {
+		padding: 30px;
+	}
+}
+
+
+
+
+
+/*
+AI prompt: "add some basic css, make the form ind the middle and some border/shadow"
+https://www.phind.com/search?cache=191b927d-896a-48fd-8bd4-4822f5b21a47
++ changes
+*/
+
+:root:not(#_) {
+
+
+
+
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+	padding: 20px;
+	width: 300px;
+	margin: 0 auto;
+}
+
+input[type="text"],
+input[type="password"] {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+button[type="submit"],
+button[type="reset"] {
+	width: 100%;
+	padding: 10px;
+	color: white;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+}
+button[type="submit"] { background-color: green; }
+button[type="reset"]  { background-color: red; }
+
+button[type="submit"]:hover,
+button[type="reset"]:hover {
+	background-color: #45bf88;
+}
+
+
+/* ---- */
+.btns > *+* {
+	margin-top: .3em;
+}
+
+.m-b-3 { margin-bottom: .3rem; }
+
+
+output {
+	border: 1px solid;
+	display: block;
+	min-height: 10em;
+	padding: .5em .3em;
+	padding-bottom: 1.5em;
+
+	white-space: pre;
+	overflow: auto;
+}
+
+
+
+
+
+}
+
+
+:root:not(#_#_#_#_#_) { /* 5id because @layer-s are stil broken becaus they are less important then css outside @layer */
+	[hidden] { display: none; visibility: hidden; }
+}
