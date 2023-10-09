@@ -1,9 +1,24 @@
 #!/usr/bin/env -S deno run --allow-net
 
 
-import totpGenerator;
 
-if (import.meta.main) {
+if (
+	// I hate this, this code kind of works now..
+	(_=>{
+		try {
+			//console.log(typeof module !== 'undefined')
+			return 0||
+				eval('typeof import') !== 'undefined'
+				? eval('import.meta.main')
+				: require.main === module
+		} catch (e) {
+			/* when gives error import.meta outside module ... stupid bun */
+			//console.warn(e);
+			return true;
+		}
+	})()
+) (async _=>{
+	totpGenerator = await totpGenerator;
 
 	var jsEngine =
 		typeof Deno    !== 'undefined' && typeof Bun === 'undefined' ? 'deno' :

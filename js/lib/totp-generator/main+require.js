@@ -2,20 +2,12 @@
 // fork of: https://github.com/bellstrand/totp-generator #( https://www.npmjs.com/package/totp-generator )
 
 
+
+
 var totpGenerator = (_=>{
 'use strict'
 
-
-
-var JsSHA;
-	// if typeof require === 'function' // in bun has both, but the module can be justnot installed
-try {
-	JsSHA = require("jssha");
-} catch {
-	//console.error(e)
-	JsSHA = import('https://cdn.jsdelivr.net/npm/jssha/+esm').then(d=>{JsSHA=d.default});
-}
-
+var JsSHA = require("jssha");
 
 function hex2dec(s) { return parseInt(s, 16); }
 function dec2hex(s) { return (s < 15.5 ? "0" : "") + Math.round(s).toString(16); }
@@ -72,7 +64,7 @@ function getToken(key, options) {
 };
 
 
-return JsSHA instanceof Promise ? JsSHA.then(_=>getToken) : getToken;
+return getToken;
 
 
 

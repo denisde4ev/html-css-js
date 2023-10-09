@@ -4,5 +4,5 @@
 console.log(
 
 
-typeof Deno    !== 'undefined' , typeof Bun === 'undefined'
+typeof Deno !== 'undefined' , typeof Bun === 'undefined'
 )
