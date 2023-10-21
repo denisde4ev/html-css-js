@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var totpGenerator = require('./index.js');
+var totpGenerator = require('./main.js');
 var fs = require('fs');
 
 
