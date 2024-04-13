@@ -6,7 +6,7 @@
 
 export default (async _=>{
 'use strict'
-var JsSHA = await import('https://cdn.jsdelivr.net/npm/jssha/+esm').default
+var JsSHA = await import('https://cdn.jsdelivr.net/npm/jssha/+esm').default;
 
 
 function hex2dec(s) { return parseInt(s, 16); }

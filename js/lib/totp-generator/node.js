@@ -5,4 +5,4 @@ var fs = require('fs');
 
 
 
-console.log(totpGenerator(fs.readFileSync(0).toString().trim()).join('\n'));
+console.log( totpGenerator( fs.readFileSync(0).toString().trim() ).join('\n') );

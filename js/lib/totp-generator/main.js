@@ -8,7 +8,7 @@ var totpGenerator = (_=>{
 'use strict'
 var JsSHA;
 try { try { JsSHA = require("jssha") } catch (e) { JsSHA = import('https://cdn.jsdelivr.net/npm/jssha/+esm').then(d=>{JsSHA=d.default}); } // if typeof require === 'function' // in bun has both, but the module can be justnot installed
-} catch(e) { eval(syncHTTPGetText(location.href)||'throw 0'); JsSHA = jsSHA;    function syncHTTPGetText(u,x,s){x=new XMLHttpRequest;x.open("GET",u,!1),x.send({});if(s=x.status,0===s||200<=s&&s<300)return x.response};  }
+} catch(e) { eval(syncHTTPGetText('https://cdn.jsdelivr.net/npm/jssha')||'throw 0'); JsSHA = jsSHA;    function syncHTTPGetText(u,x,s){x=new XMLHttpRequest;x.open("GET",u,!1),x.send({});if(s=x.status,0===s||200<=s&&s<300)return x.response};  }
 function hex2dec(s) { return parseInt(s, 16); }
 function dec2hex(s) { return (s < 15.5 ? "0" : "") + Math.round(s).toString(16); }
 function leftpad(str, len, pad) { return str.padStart(len, pad); }

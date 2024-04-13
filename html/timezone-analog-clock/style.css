@@ -1,2 +1,24 @@
 
 .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+
+_.clock-wrap {
+	padding-top: 50px;
+	min-height: 30vh;
+	/* background: wheat; */
+
+	/*center items*/
+	display: flex;
+	justify-content: center;
+  align-items: center;
+
+}
+
+
+_.clock-frame {
+	border: 6px solid black;
+	border-radius: 50%;
+	min-height: 400px;
+	min-width: 400px;
+}
+
+

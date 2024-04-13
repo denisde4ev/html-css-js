@@ -1,0 +1,64 @@
+<!DOCTYPE html><html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>timezone-analog-clock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./style.css">
+</head><body>
+<div cless="page">
+<style>
+  *{margin:0;padding:0}
+  
+  /*@media (prefers-color-scheme: light) {*/
+  @media (prefers-color-scheme: dark) {
+  	html,body{ background: #111; color: white; }
+  }
+  
+  .clock-wrap-center {
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  	height: 100dvh;
+  }
+  
+  .clock-wrap {
+  	width: 500px;
+  	aspect-ratio: 1;
+  	border-radius: 50%;
+  
+  	border: 5px solid red;
+  
+  
+  	/* for testing: */
+  	background: gray;
+  }
+  
+  .clock-hand-second {
+  	/* the line */
+  	border-top: 1px solid lightgreen;
+  	width: 200px;
+  }
+  
+  .clock-hand-second.p-absolute {
+  	inset: 50%;
+  }
+  
+  .p-relative { position: relative; }
+  .p-absolute { position: absolute; }
+  
+  .clock-hand-minute {}
+  .clock-hand-hour {}
+  
+</style>
+<h1 class="sr-only">timezone-analog-clock</h1>
+<div class="clock-wrap-center">
+  <div class="clock-wrap p-relative">
+    <div class="clock-hand-second p-absolute"></div>
+    <div class="clock-hand-minute p-absolute"></div>
+    <div class="clock-hand-hour p-absolute"></div>
+  </div>
+</div>
+<script></script></div>
+</body>
+</html>
