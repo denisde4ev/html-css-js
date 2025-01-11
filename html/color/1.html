@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+	onclick="
+		if (!(  event.target == this || event.target == document.body) ) return;
+
+		document.body.classList.toggle('_uggkc_hide')
+	"
+>
+<head>
+
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>colors</title>
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; }
+
+/*
+:root:not(#_#_#_)
+>
+body._uggkc_hide ._uggkc_hidden { display: none; }
+*/
+:root:not(#_#_#_)
+>
+body._uggkc_hide > * { display: none; }
+
+
+</style>
+
+
+
+
+
+</head>
+<body>
+
+<!-- TODO: dark theme based on pref -->
+<div class=wrap style="padding: 10px; background: white">
+
+<button
+	style="
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		background-color: #0074D9;
+		color: white;
+		border: none;
+		padding: 10px;
+		cursor: pointer;
+	"
+	onclick="
+		if (document.fullscreenElement) {
+			document.exitFullscreen();
+			return;
+		}
+
+		var elem = document.documentElement;
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		} else if (elem.webkitRequestFullscreen) {
+			elem.webkitRequestFullscreen(); // Safari
+		} else if (elem.msRequestFullscreen) {
+			elem.msRequestFullscreen(); // IE11
+		}
+	"
+>Toggle Fullscreen</button>
+
+
+
+
+
+<center>(click anywhere to hide)</center>
+
+
+<br>
+<hr>
+
+
+ <label for="favcolor">Select your favorite color:</label>
+	<input
+		for="null"
+		type="color"
+		value="#"
+		oninput="
+			var selectedColor = this.value;
+			document.documentElement.style.backgroundColor = selectedColor;
+		"
+	>
+
+
+</body>
+</html>
