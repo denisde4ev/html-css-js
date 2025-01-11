@@ -54,3 +54,9 @@ document.body.addEventListener('dblclick', function(event) {
 	}
 });
 
+// Listen for keydown events on the document
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape' && !event.repeat) {
+		toggleCSS();
+	}
+});
