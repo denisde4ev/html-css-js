@@ -12,6 +12,7 @@ o=${o%".sh"}
 case ${0##*/} in
 	start-pug.sh|start-pug) pugopt='-wP';;
 	build-pug.sh|build-pug) pugopt='-P';;
+	build-index.sh|build-index) pugopt='-P'; case $# in 0) ;; *) printf %s >&2 "err: no arguments expected"; exit 2; esac; set -- index.pug;;
 	*) echo >&2 "unknown \$0=${0}"; exit 2;;
 esac
 

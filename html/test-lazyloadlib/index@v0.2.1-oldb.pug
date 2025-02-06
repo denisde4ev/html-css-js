@@ -6,12 +6,12 @@ title Hello, World!
 style @media(prefers-color-scheme:dark){html{color-scheme:dark}
 
 -
-	i=(
-		(fs.readFileSync(
-			(filename.replace(/\/?[^/]*$/,'')||'.')+'/../../'+
-			'js/lib/req/req-synconly@v0.1.2.js'
-		)+'').replace(/\n?^req.b = \{__proto__:null\};.*\n?/m, '\n')
-	)
+-	i=(
+-		(fs.readFileSync(
+-			(filename.replace(/\/?[^/]*$/,'')||'.')+'/../../'+
+-			'js/lib/req/req-synconly@v0.1.2.js'
+-		)+'').replace(/\n?^req.b = \{__proto__:null\};.*\n?/m, '\n')
+-	)
 
 script!= i
 script.
