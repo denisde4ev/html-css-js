@@ -1,0 +1,143 @@
+doctype html
+<html>
+head
+	title Old School Terminal Style
+	script(src="https://unpkg.com/@tailwindcss/browser@4")
+
+body(class=`
+	bg-[#002b36] text-[#00ff00]
+	font-monospace
+	h-screen
+	flex flex-col items-center justify-center
+`)
+
+	//- not 1 indenting to be inside of <body> tag, and so what, browsers fixes it, and I'm still using pug
+	//- h1(class="text-4xl mb-4") Welcome to the Old School Terminal
+	//- p This is a simple website styled with TailwindCSS and Pug.
+
+	p#digital(class=`
+		text-center
+	`) 00:00:00.000
+
+
+	hr(class=`
+		w-100
+
+		`+/*
+		color-[#]
+		*/`
+		opacity-30
+		mt-2 mb-5
+	`)
+
+
+	div#analog(class=`
+		w-100 h-100
+		ascpect-1/1
+		shrink-0
+
+		border border-current
+		rounded-full
+
+		flex items-center justify-center
+		relative
+	`)
+
+		//- #frame-0.frame(class=``)
+		//- #frame-3.frame(class=``)
+		//- #frame-6.frame(class=``)
+		//- #frame-9.frame(class=``)
+
+
+
+		//p(class="absolute bottom-3/4 left-3 transform -translate-x-1/2") I
+		// p(class="absolute top-1/2 right-3 transform -translate-x-1/2") II
+		p(class="absolute top-1/2 right-2 transform -translate-y-1/2") III
+		// p(class="absolute bottom-3 left-3 transform -translate-x-1/2") IV
+		// p(class="absolute bottom-6 left-3 transform -translate-x-1/2") V
+		p(class="absolute bottom-2 left-1/2 transform -translate-x-1/2") VI
+		// p(class="absolute top-3/4 right-3 transform -translate-x-1/2") VII
+		// p(class="absolute top-3/4 left-3 transform -translate-x-1/2") VIII
+		p(class="absolute top-1/2 left-2 transform -translate-y-1/2") IX
+		// p(class="absolute top-3/4 right-6 transform -translate-x-1/2") X
+		// p(class="absolute top-6 left-3 transform -translate-x-1/2") XI
+		p(class="absolute top-2 left-1/2 transform -translate-x-1/2") XII
+
+		//-- let i = 0;
+		//-.marker-1(class=`absolute w-1/1 bg-red-700 rotate-${i * 30 + 120} `)
+		//-	span(class=`inline-block -rotate-${i * 30 + 120}`)= i+1
+		//-- i++;
+		//-.marker-1(class=`absolute w-1/1 bg-red-700 rotate-${i * 30 + 120} `)
+		//-	span(class=`inline-block -rotate-${i * 30 + 120}`)= i+1
+		//-- i++;
+		//-.marker-1(class=`absolute w-1/1 bg-red-700 rotate-${i * 30 + 120} `)
+		//-	span(class=`inline-block -rotate-${i * 30 + 120}`)= i+1
+		//-- i++;
+		- for (let i = 0; i < 12; i++)
+			if i % 3 != 2
+				.marker-1(class=`absolute w-1/1 rotate-${i * 30 + 120}`)
+					span(class=`inline-block m-3 opacity-50`) -
+					//- span(class=`inline-block -rotate-${i * 30 + 120} m-3 opacity-50`)= i + 1
+
+		
+		div#clock-hand-h(class=`
+			w-1
+			h-60/200 mt-40/200
+			bg-current
+			absolute bottom-1/2
+			origin-bottom
+			rounded-l-full
+		`)
+		div#clock-hand-m(class=`
+			w-0.5
+			h-80/200 mt-20/200
+			absolute bottom-1/2
+			bg-current
+			origin-bottom
+			rounded-l-full
+		`)
+		div#clock-hand-s(class=`
+			w-0.25
+			h-90/200 mt-10/200
+			bg-red-500
+			absolute bottom-1/2
+			origin-bottom
+			rounded-l-full
+		`)
+
+
+script.
+	//throw 1
+	{
+		let fn = _ => {
+			var now = new Date();
+			;
+			;
+			{
+				let h  = now.getHours()       .toFixed().padStart(2, '0');
+				let m  = now.getMinutes()     .toFixed().padStart(2, '0');
+				let s  = now.getSeconds()     .toFixed().padStart(2, '0');
+				let ns = now.getMilliseconds().toFixed().padStart(3, '0');
+				document.getElementById('digital').textContent = `${h}:${m}:${s}.${ns}`;
+			}
+			;
+			;
+			;
+			{
+				// note:! vars are in fraction of 1
+				// example: instead of s=45, we get 0.75 (45 / 60 = 3/4 = 0.75)
+				let s = now.getSeconds() / 60;
+				let m = (now.getMinutes() + s) / 60;
+				let h = (now.getHours() + m) / 12;
+				document.getElementById('clock-hand-s').style.transform = `rotate(${s * 360}deg)`;
+				document.getElementById('clock-hand-m').style.transform = `rotate(${m * 360}deg)`;
+				document.getElementById('clock-hand-h').style.transform = `rotate(${h * 360}deg)`;
+			}
+		};
+		fn(); setInterval(fn, 1e3);
+	}
+
+
+
+
+</html>

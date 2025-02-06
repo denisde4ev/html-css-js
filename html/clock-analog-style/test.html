@@ -1,0 +1,113 @@
+<!DOCTYPE html><html>
+<head>
+  <title>Old School Terminal Style</title>
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="
+	bg-[#002b36] text-[#00ff00]
+	font-monospace
+	h-screen
+	flex flex-col items-center justify-center
+">
+  <p class="
+		text-center
+	" id="digital">00:00:00.000</p>
+  <hr class="
+		w-100
+
+		
+		opacity-30
+		mt-2 mb-5
+	">
+  <div class="
+		w-100 h-100
+		ascpect-1/1
+		shrink-0
+
+		border border-current
+		rounded-full
+
+		flex items-center justify-center
+		relative
+	" id="analog">
+    <!--p(class="absolute bottom-3/4 left-3 transform -translate-x-1/2") I-->
+    <!-- p(class="absolute top-1/2 right-3 transform -translate-x-1/2") II-->
+    <p class="absolute top-1/2 right-2 transform -translate-y-1/2">III</p>
+    <!-- p(class="absolute bottom-3 left-3 transform -translate-x-1/2") IV-->
+    <!-- p(class="absolute bottom-6 left-3 transform -translate-x-1/2") V-->
+    <p class="absolute bottom-2 left-1/2 transform -translate-x-1/2">VI</p>
+    <!-- p(class="absolute top-3/4 right-3 transform -translate-x-1/2") VII-->
+    <!-- p(class="absolute top-3/4 left-3 transform -translate-x-1/2") VIII-->
+    <p class="absolute top-1/2 left-2 transform -translate-y-1/2">IX</p>
+    <!-- p(class="absolute top-3/4 right-6 transform -translate-x-1/2") X-->
+    <!-- p(class="absolute top-6 left-3 transform -translate-x-1/2") XI-->
+    <p class="absolute top-2 left-1/2 transform -translate-x-1/2">XII</p>
+    <div class="marker-1 absolute w-1/1 rotate-120"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-150"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-210"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-240"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-300"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-330"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-390"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="marker-1 absolute w-1/1 rotate-420"><span class="inline-block m-3 opacity-50">-</span></div>
+    <div class="
+			w-1
+			h-60/200 mt-40/200
+			bg-current
+			absolute bottom-1/2
+			origin-bottom
+			rounded-l-full
+		" id="clock-hand-h"></div>
+    <div class="
+			w-0.5
+			h-80/200 mt-20/200
+			absolute bottom-1/2
+			bg-current
+			origin-bottom
+			rounded-l-full
+		" id="clock-hand-m"></div>
+    <div class="
+			w-0.25
+			h-90/200 mt-10/200
+			bg-red-500
+			absolute bottom-1/2
+			origin-bottom
+			rounded-l-full
+		" id="clock-hand-s"></div>
+  </div>
+</body>
+<script>
+  //throw 1
+  {
+  	let fn = _ => {
+  		var now = new Date();
+  		;
+  		;
+  		{
+  			let h  = now.getHours()       .toFixed().padStart(2, '0');
+  			let m  = now.getMinutes()     .toFixed().padStart(2, '0');
+  			let s  = now.getSeconds()     .toFixed().padStart(2, '0');
+  			let ns = now.getMilliseconds().toFixed().padStart(3, '0');
+  			document.getElementById('digital').textContent = `${h}:${m}:${s}.${ns}`;
+  		}
+  		;
+  		;
+  		;
+  		{
+  			// note:! vars are in fraction of 1
+  			// example: instead of s=45, we get 0.75 (45 / 60 = 3/4 = 0.75)
+  			let s = now.getSeconds() / 60;
+  			let m = (now.getMinutes() + s) / 60;
+  			let h = (now.getHours() + m) / 12;
+  			document.getElementById('clock-hand-s').style.transform = `rotate(${s * 360}deg)`;
+  			document.getElementById('clock-hand-m').style.transform = `rotate(${m * 360}deg)`;
+  			document.getElementById('clock-hand-h').style.transform = `rotate(${h * 360}deg)`;
+  		}
+  	};
+  	fn(); setInterval(fn, 1e3);
+  }
+  
+  
+  
+  
+</script></html>
