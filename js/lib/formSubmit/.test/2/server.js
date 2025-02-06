@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+// NOTE!: AI created this code
+// prompt:
+// ```using nodejs, create server.js that uses express to listen on port variable `var port = PROCESS.env.PORT || '8080';`.
+// must have /login that just checks if username is foo and password 123, and then returns application/json response with `{ "succsess": true, "username": "Foo Bar" }`. 
+// else returns static file from curren directory, for example ./style.css
+// ```
+// + edited
+
+
 {
 	if (module !== process.mainModule) throw new Error(`${module.filename}: only can be used as main module!`);
 	require('/^/ https://github.com/denisde4ev/html-css-js/raw/master/js/node/require-npm-i/1.js')(module);

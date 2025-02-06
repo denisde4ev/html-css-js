@@ -29,8 +29,7 @@
 +}
  
  
--// middleware to parse POST data:
-+// middleware to parse POST data:
+ // middleware to parse POST data:
  {
 +	var bodyParser = require('body-parser');
  	app.use(bodyParser.urlencoded({ extended: true })); // when 'application/x-www-form-urlencoded'
