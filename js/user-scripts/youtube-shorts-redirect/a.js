@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         YouTube - Shorts Redirect
+// @name         YouTube - Shorts Redirect (simple af)
 // @namespace    Violentmonkey Scripts
 // @match        *://*.youtube.com/*
 // @description  YouTube /shorts redirect to /watch
@@ -8,6 +8,10 @@
 // @author       denisde4ev
 // @run-at       document-start
 // ==/UserScript==
+
+
+// simple, and we don't count the test comments
+
 
 
 //function run(url) {

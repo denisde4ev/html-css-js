@@ -50,7 +50,7 @@ if ( sessionStorage.getItem('Oozeiv4O_homeRedirect') ) {
 
 
 
-document.addEventListener("yt-navigate-start", _main); // not tested
+document.addEventListener("yt-navigate-start", _main);
 
 _main({ Oozeiv4O_timeWaiting:0, Oozeiv4O_init: true });
 let Oozeiv4O_homeRedirect = false;
