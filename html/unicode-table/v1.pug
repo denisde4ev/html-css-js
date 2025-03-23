@@ -1,0 +1,178 @@
+doctype html
+
+//- 
+	doctype html
+	head
+		meta(charset='utf-8')
+		// if render blocking js: link(rel="prefetch",href="./script.js")
+		title Hello, World!
+		meta(name='description',content='Hello, World!')
+		meta(name='viewport',content='width=device-width,initial-scale=1')
+		link(href='./style.css',rel='stylesheet')
+		script(src='./script.js',async)
+	h1 Hello, World!
+	// if render blocking js: script(src='./script.js')
+
+
+<html lang="en">
+head
+	title unicode table
+	meta(http-equiv="content-type", content="text/html;charset=UTF-8;charset=utf-8")
+
+	//- //never tested: meta(name="viewport", content="width=device-width, initial-scale=1, user-scalable=1")
+	//- link(type="text/css", rel="stylesheet", href="./style.css")
+	link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css")
+
+	//- meta(name="description", content="")
+	//-
+		class="no-js"
+		script.
+		{
+		let i = document.documentElement.classList;
+		i.remove('no-js');
+		i.add('js')
+		i.add('js-loading')
+		setTimeout(()=>i.remove('js-loading'))
+		}
+
+	// github.com/denisde4ev/html-css-js/raw/master/js/lib/jQ/min.js
+	script(src="../../js/lib/jQ/min.js")
+
+	style.
+		* {margin: 0; padding: 0}
+		body {padding: 5px 50px; }
+		/**/
+		.t01 th, .t01 caption, .t01 .info { font-weight: normal; color: #0009; }
+		table.t01 {
+			border-collapse: separate;
+			border-spacing: 5px;
+		}
+		/**/
+		table.t01 td, table.t01 th {
+			border: 1px solid transparent;
+			/*padding: 8px;*/
+			text-align:center;
+		}
+		table.t01 td span {
+			width: 2em;
+			display: inline-block;
+		}
+
+<body>
+
+noscript requres js!
+
+
+- const clickToCopy = true;
+- const clickforInfo = false; // TODO: nothing done aboutit (exept 1 caption)
+- const cols = 0x10;
+script= `const pugvars_clickToCopy = ${JSON.stringify(clickToCopy)};`
+script= `const pugvars_clickForInfo = ${JSON.stringify(clickForInfo)};`
+script= `const pugvars_cols = ${JSON.stringify(cols)};`
+
+
+main(style="font-family: monospace;")
+
+	h1(class="text-xl") Unicode Table:
+
+	table.t01#table01
+		//- DONT:
+		//- `colgroup\n\tcol(style="width: 2em;")`
+		//- does not work, unless the table is with table layout fixed, and then if its fixed, there cannot be col that is with width auto
+
+		if (clickToCopy || clickForInfo)
+			-
+				let tmp = (
+					(clickToCopy ? 'click any <td> to copy' : '') +
+					(clickforInfo ? 'click any <td> for more info' : '') +
+					""
+				);
+			caption= tmp
+
+		if (clickToCopy)
+			script.
+				function clickedTd(e) {
+					var i = +this.getAttribute('data-i');
+					var char = this.innerText;
+					//
+					var range = document.createRange();
+					range.selectNodeContents(this);
+					//
+					var selection = window.getSelection();
+					selection.removeAllRanges();
+					selection.addRange(range);
+					//
+					document.execCommand('copy');
+					//
+					//selection.removeAllRanges();
+					//
+					//alert(`coppyed: 0x${i.toString(16)}:${char}`)
+				}
+
+		// TODO/consider: pre compile it with pug
+		script.
+			// JavaScript for generating a Unicode table
+			//var rows = 0x20;
+			var cols = pugvars_cols;
+			var iEndStr = '0xffff'; // just as I like it
+			var iEnd = +iEndStr;
+			//
+			//var hrMinCharsCount = ( (rows-1) * cols ).toString(16).length;
+			//var hrMinCharsCount = ( iEnd - (iEnd%cols) ).toString(16).length;
+			var hrMinCharsCount = iEndStr.replace('0x','').length;
+			//
+			var table =  table01; //document.currentScript.parentElement;
+			//
+			//for (let row = 0, i = 0; row < rows; row++) { // when fixed rows
+			a: for (let i = 0; i <= iEnd; ) {
+				let tr = $.new('tr');
+				table.insertAdjacentElement('beforeEnd', tr);
+				//
+				//tr.insertAdjacentHTML('beforeEnd', `<th>0x${ (row * cols).toString(16).padStart(hrMinCharsCount, '0') }:</th>`);
+				tr.insertAdjacentHTML('beforeEnd',
+					`<th>0x${ (i).toString(16).padStart(hrMinCharsCount, '0') }:</th>`);
+				//
+				for (let col = 0; col < cols; col++) { // note: don't set cols=0, you know its infinite loop
+					tr.insertAdjacentElement('beforeEnd',
+						$.new('td').insertAdjacentElement('beforeEnd',
+							$.new('span')
+							.val('className', pugvars_clickToCopy || pugvars_clickForInfo ? 'cursor-pointer' : '')  // todo?: not elegant
+							.attr('onclick', 'return clickedTd.call(this, event)')
+							.attr('data-i', i)
+							.attr('title', pugvars_clickToCopy ? 'click to copy' : '') // todo?: not elegant
+							//.attr('data-ix16', i.toString(16)) // when testing
+							.val('innerText', String.fromCharCode(i))
+						).parentElement
+					);
+					// .padEnd(2, ' ');
+					//
+					i++;
+					// if ( !(i <= iEnd) ) break a; // verry rare to be needed
+				}
+				//
+			}
+			table.insertAdjacentHTML('beforeEnd',
+				//`<tr class="info"><td colspan=999 style="text-align:center;">0x${iEnd.toString(16)}</td></tr>`
+				`<tr class="info"><td colspan=999 style="text-align:center;">0x${iEndStr}</td></tr>`
+			)
+			//
+			// document.body.textContent = unicodeTable;
+
+
+		script.
+			table01.querySelectorAll('td').forEach(td=>{
+				if ( td.textContent === '' ) {
+					// no bg
+				} else if ( td.textContent.trim() === '' ) {
+					td.classList.add('bg-gray-500');
+				} else if (td.textContent.length === 1) {
+					td.classList.add('bg-gray-200');
+				}
+			});
+
+
+
+
+
+
+
