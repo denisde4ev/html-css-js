@@ -1,0 +1,9 @@
+steps:
+  - name: Temporarily remove symlink
+    run: rm proj/keyboard-remap
+
+  - name: Build site
+    run: bundle exec jekyll build
+
+  - name: Restore symlink (optional)
+    run: ln -s /desired/path proj/keyboard-remap
