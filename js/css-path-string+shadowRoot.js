@@ -82,35 +82,38 @@ copy(a.join`\n`);
 
 	};
 
-	var result = '';
-	var previousWasShadowRoot = null;
-	/* values:
-	nullish = no previous element
-	false = not a shadow root
-	true = shadow root
-	*/
+	{
+		var result = '';
 
-	for (let el of a) {
-		let isShadowRoot =
-			el === '#shadow-root (open)'   ? true :
-			el === '#shadow-root (closed)' ? true :
-			false
-		;
+		var previousWasShadowRoot = null;
+		/* values:
+		nullish = no previous element
+		false = not a shadow root
+		true = shadow root
+		*/
 
-		if (isShadowRoot) {
-			if (isShadowRoot !== null) result += '\n';
-			result += el;
-		} else {
-			if (previousWasShadowRoot) {
-				result += '\n';
-			} else if (previousWasShadowRoot !== null) {
-				result += ' >\n';
+		for (let el of a) {
+			let isShadowRoot =
+				el === '#shadow-root (open)'   ? true :
+				el === '#shadow-root (closed)' ? true :
+				false
+			;
+
+			if (isShadowRoot) {
+				if (isShadowRoot !== null) result += '\n';
+				result += el;
+			} else {
+				if (previousWasShadowRoot) {
+					result += '\n';
+				} else if (previousWasShadowRoot !== null) {
+					result += ' >\n';
+				}
+
+				result += el;
 			}
 
-			result += el;
+			previousWasShadowRoot = isShadowRoot;
 		}
-
-		previousWasShadowRoot = isShadowRoot;
 	}
 
 
@@ -120,4 +123,33 @@ copy(a.join`\n`);
 	copy( result );
 };
 
+
+
+
+
 // todo: string to js querySelector nested with shadow root seearching
+function queryDeep(selector) {
+	var parts = selector.split('#shadow-root'); // Split by shadow root
+	var element = document;
+	var first = false;
+
+	for (var part of parts) {
+		if (first) {
+			// Access the shadow root from the previous element
+			element = element.shadowRoot;
+			if (!element) {
+				throw new Error('Shadow root not found');
+			}
+		}
+
+		// Perform the query on the current element/shadow root
+		if (part) {
+			element = element.querySelector(part);
+			if (!element) {
+				throw new Error(`Element not found for: ${part}`);
+			}
+		}
+		first = true; // Set the variable to true at the end of the loop
+	}
+	return element;
+}
