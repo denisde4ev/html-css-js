@@ -1,16 +1,17 @@
 // ==UserScript==
-// @name        YouTube Shorts Redirect (instant - no page reload)
-// @namespace   Violentmonkey Scripts
-// @match       https://www.youtube.com/*
-// @grant       none
-// @version     1.1.2
-// @author      @denisde4ev
-// @description instantly replaces shorts UI with video UI, without page reload! very fast!
-// @description (well no reload unless it's loading the page of shorts, then its faster to redirect instead of waiting `history` events to start listening from youtube)
-// @description 
-// @description started on 2025-03-11; last working test: 2025-06-29
-// @run-at      document-start
-// @homepage    https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/yt-shorts-redirect/b.js
+// @name         YouTube Shorts Redirect (instant - no page reload)
+// @namespace    Violentmonkey Scripts
+// @match        https://www.youtube.com/*
+// @grant        none
+// @version      1.1.2
+// @author       @denisde4ev
+// @description  instantly replaces shorts UI with video UI, without page reload! very fast!
+// @description  (well no reload unless it's loading the page of shorts, then its faster to redirect instead of waiting `history` events to start listening from youtube)
+// @description  
+// @description  started on 2025-03-11; last working test: 2025-06-29
+// @run-at       document-start
+// @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/yt-shorts-redirect/b.js
+// @license      GPLv3
 // ==/UserScript==
 
 

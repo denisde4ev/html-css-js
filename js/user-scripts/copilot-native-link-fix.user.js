@@ -10,6 +10,8 @@
 // @description  2025-06-19
 // @match        https://copilot.microsoft.com/*
 // @grant        none
+// @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/copilot-native-link-fix.user.js
+// @license      GPLv3
 // ==/UserScript==
 void function() {
 'use strict';
