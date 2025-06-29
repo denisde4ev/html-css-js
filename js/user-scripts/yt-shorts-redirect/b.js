@@ -3,17 +3,21 @@
 // @namespace   Violentmonkey Scripts
 // @match       https://www.youtube.com/*
 // @grant       none
-// @version     1.1.1
+// @version     1.1.2
 // @author      @denisde4ev
-// @description started on 2025-03-11; last woring test: 2025-06-29
+// @description instantly replaces shorts UI with video UI, without page reload! very fast!
+// @description (well no reload unless it's loading the page of shorts, then its faster to redirect instead of waiting `history` events to start listening from youtube)
+// @description 
+// @description started on 2025-03-11; last working test: 2025-06-29
 // @run-at      document-start
+// @homepage    https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/yt-shorts-redirect/b.js
 // ==/UserScript==
 
 
 // log id: 'js_Oozeiv4O'
 //console.debug('hi js_Oozeiv4O, log to click and debug me');
 
-{ // if already loading shorts, reload will be just as fast as continueing to load. (and history.current state is not available while loading ... so better reload)
+{ // if already loading shorts, reload will be just as fast as continuing to load. (and history.current state is not available while loading ... so better reload)
 	let url = document.location.href;
 	if (url.startsWith('https://www.youtube.com/shorts/')) {
 		// 'https://www.youtube.com/shorts/'.length
@@ -54,11 +58,11 @@ document.addEventListener("yt-navigate-start", () => {
 					"videoId": videoId,
 					//"playerParams": "?????????????????",
 					//"watchEndpointSupportedOnesieConfig": {
-					//  "html5PlaybackOnesieConfig": {
-					//    "commonConfig": {
-					//      "url": "https://rr5---?????.googlevideo.com/initplayback?source=youtube&?????",
-					//    }
-					//  }
+					//	"html5PlaybackOnesieConfig": {
+					//		"commonConfig": {
+					//			"url": "https://rr5---?????.googlevideo.com/initplayback?source=youtube&?????",
+					//		}
+					//	}
 					//}
 				}
 			},
