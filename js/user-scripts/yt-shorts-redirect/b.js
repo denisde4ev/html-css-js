@@ -1,18 +1,14 @@
 // ==UserScript==
-// @name        YouTube Shorts Redirect (blazingly fast - no page reload)
+// @name        YouTube Shorts Redirect (instant - no page reload)
 // @namespace   Violentmonkey Scripts
 // @match       https://www.youtube.com/*
 // @grant       none
-// @version     1.0
+// @version     1.1.1
 // @author      @denisde4ev
-// @description started on 2025-11-03T23:34:08+02:00
+// @description started on 2025-03-11; last woring test: 2025-06-29
 // @run-at      document-start
 // ==/UserScript==
 
-
-
-
-//
 
 // log id: 'js_Oozeiv4O'
 //console.debug('hi js_Oozeiv4O, log to click and debug me');
@@ -24,19 +20,14 @@
 		// location.replace('https://www.youtube.com/watch?v='+url.slice(31));
 		location.replace('https://youtube.com/v/'+url.slice(31)); // `/v` I'm leaving it like this to indicate page loading
 		return; // return as page will be reloaded, and script run again without going to this `if` case
+		// well, yes. this time will reload page. my test on my PC shows its faster then waiting for YT & history events to starts listening.
 	}
 }
 
-// for testing
-if (0)
-window.onbeforeunload = e => {
-e.preventDefault();
-return 'stop'
-}
 
 
 
-document.addEventListener("yt-navigate-start", _ => {
+document.addEventListener("yt-navigate-start", () => {
 
 	try {
 		// idk if possible to get history.state but no .endpoint
@@ -71,7 +62,10 @@ document.addEventListener("yt-navigate-start", _ => {
 					//}
 				}
 			},
+
+			// seems like it's not important:
 			//"JSC$25806_savedComponentState": {},
+			//"JSC$26628_savedComponentState": {...},
 			"entryTime": history.state.entryTime,
 		},
 		document.title,
