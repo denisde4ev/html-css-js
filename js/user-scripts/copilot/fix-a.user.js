@@ -4,11 +4,12 @@
 // @match        https://copilot.microsoft.com/*
 // @description  because it messes up middle click to open in new tab.
 // @description  and right click open in new tab/new window.
-// @description  (and annoyng 1 additional button to click to confirm opening)
+// @description  (and annoying 1 additional button to click to confirm opening)
 // @description
 // @description  2025-06-19
 // @author       denisde4ev
 // @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/copilot/fix-a.user.js
+// @license      GPTv3
 // @namespace    Violentmonkey Scripts
 // @grant        none
 // ==/UserScript==
