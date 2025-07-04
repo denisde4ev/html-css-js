@@ -8,7 +8,7 @@
 // @description
 // @description  2025-06-19
 // @author       denisde4ev
-// @homepage     https://github.com/denisde4ev/html-css-js/raw/master/js/user-scripts/copilot/fix-a.user.js
+// @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/copilot/fix-a.user.js
 // @namespace    Violentmonkey Scripts
 // @grant        none
 // ==/UserScript==
