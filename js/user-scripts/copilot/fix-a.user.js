@@ -91,4 +91,7 @@ function fixBtn(btn) {
 };
 
 
+// for now won't auto open links like `[3]`  selector:`button[aria-expanded][aria-label^="Citation "][type="button"]`  and cannot easily / (or at all) get the url value, just to be shown as hint in the corner
+
+
 }();
