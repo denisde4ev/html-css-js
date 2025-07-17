@@ -11,6 +11,16 @@
 // @run-at       document-idle
 // @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/ytm-uthere.user.js
 // ==/UserScript==
+
+
+// known bug 2025-07-18
+/*
+when tab in bg does not continue playng
+but when going back as fucused tab, it instanly resumes  + shows some message ~(something like)"thansk for confirming"
+(I think this might be because of YTM itself, probably does not even show the question in bg tab)
+*/
+
+
 void function() {
 'use strict';
 
