@@ -15,6 +15,12 @@
 // ==/UserScript==
 
 
+/*
+2025-07-20
+known bug: when loading sometimes youtube wont stop stop the short and play in background,
+so it should first pause old player, then redirect
+*/
+
 // log id: 'js_Oozeiv4O'
 //console.debug('hi js_Oozeiv4O, log to click and debug me');
 
