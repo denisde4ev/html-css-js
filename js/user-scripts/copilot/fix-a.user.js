@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         Copilot to use native <a href> + userselect fix
-// @version      1.2
+// @name         Copilot to use native <a href> link + userselect fix
+// @version      1.2.2
 // @match        https://copilot.microsoft.com/*
 // @description  because it messes up middle click to open in new tab.
 // @description  and right click open in new tab/new window.
@@ -10,8 +10,18 @@
 // @author       denisde4ev
 // @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/copilot/fix-a.user.js
 // @namespace    Violentmonkey Scripts
-// @grant        none
+// @grant        GM_addStyle
 // ==/UserScript==
+
+if (typeof GM_addStyle === 'undefined') { // if executed outside
+	// note: never tested!
+
+	eval('var GM_addStyle');
+	GM_addStyle = function(css) {
+		return (document.head||document.documentElement).insertAdjacentHTML('beforeend', `<style>${css}</style>`);
+	};
+}
+
 void function() {
 'use strict';
 
@@ -20,7 +30,7 @@ void function() {
 //console.log('debug me: js_qoo0uk7U');
 //debugger
 
-document.head.insertAdjacentHTML('beforeend', `<style>
+GM_addStyle(`
 
 
 	.x_qoo0uk7U-show,button[data-url],
@@ -36,7 +46,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 	.x_qoo0uk7U-hidden, .x_qoo0uk7U-hidde-next + button[data-url] { display: none !important; }
 	.x_qoo0uk7U-show { opacity: unset !important; }
 
-<style>`);
+`);
 
 
 
