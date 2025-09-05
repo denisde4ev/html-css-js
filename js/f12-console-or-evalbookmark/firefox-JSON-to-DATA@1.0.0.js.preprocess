@@ -4,6 +4,7 @@
 
 
 var DATA = JSON.parse(JSONView.json.textContent);
+!!
 !| case ${FIX_OBJ_TO_ARRAY+x} in x)
 DATA = (DATA=>{ // optianall fix: (recursively) if (obj that has only array indexes as keys) then convert it to array
 	var fn = function(d) {
@@ -23,5 +24,5 @@ DATA = (DATA=>{ // optianall fix: (recursively) if (obj that has only array inde
 !! esac
 !!
 !| case ${LOG_AFTER_PARSE+x} in x)
-console.log('DATA=',DATA)
+console.log('DATA=', DATA);
 !! esac

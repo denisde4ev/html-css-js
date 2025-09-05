@@ -1,0 +1,78 @@
+<html>
+<head>
+</head>
+<body>ds
+<li>tZ
+</li>
+</body>
+<style type="text/css">
+
+li {
+	list-style: none;
+  position: relative;
+  padding-left: 1.2em;     /* space for your custom marker */
+}
+
+li::before {
+	top: 0; left: 0;
+/*   content: "⣶"; */
+/* 	background: red; */
+/*   content: "⠿"; */
+/* 	content: "⋮⋮"; letter-spacing: -10px; left: -5px; */
+	content: "ⵗⵗ";
+	left: 7px;
+/* 	content: "t"; */
+	font-size: 1em;
+	bottom: 0; top: unset;
+/* 	content: "⫶⫶"; */
+  white-space: pre;         /* honor the line break */
+  position: absolute;
+/*   left: 0; */
+/* 	left: 0; */
+/*   bottom: : -5px; top: auto; */
+/* 	top: 0; bottom: auto; */
+/*   line-height: 1;           *//* control spacing between dots */
+  color: currentColor;      /* inherit text color */
+}
+
+/*
+
+6 brail sign sometimes for some fonts will have unfilled dots,
+and does not allign propperly with the text (moving it is not relyable)
+
+--
+
+svg name:
+grip-vertical
+https://tablericons.com/icon/grip-vertical
+
+
+
+*/
+
+
+/*------------*/
+
+/* origin from: https://css.gg/icon/menu-grid-o/css */
+.dragable-icon:before {
+	content: "";
+	display: inline-block;
+	width: 3Q;
+	height: 3Q;
+	margin-right: 5Q;
+	color: gray;
+	background: currentColor;
+	box-shadow:
+		6Q 0 0,
+		0 -6Q 0,
+		6Q -6Q 0,
+		0 -12Q 0,
+		6Q -12Q 0
+	;
+  border-radius: 9Q;
+}
+
+
+
+</style>
+</html>

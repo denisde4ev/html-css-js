@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YTMusic Auto "Still Watching?" Confirm (instant - no delay)
 // @namespace    Violentmonkey Scripts
-// @version      1.0.1
+// @version      1.1
 // @author       denisde4ev
 // @description  when pmompt opens "Still watching?" click "OK" prompt on YouTube Music as soon as it appears.
 // @description  
@@ -19,10 +19,13 @@ void function() {
 function checkAndConfirm(container) {
 	// console.log('YTMusic-uthere: checkAndConfirm, container:', container)
 	var youThere = container.querySelector('ytmusic-you-there-renderer');
-	if (!youThere) return;
+	if (!( youThere && youThere.checkVisibility() )) return;
 
 	var btn = container.querySelector('button.yt-spec-button-shape-next, button.yt-spec-button-shape-next--text');
-	if (!btn) console.error('could not find OK button for youThere');
+	if (!btn) {
+		console.error('could not find OK button for youThere');
+		return;
+	}
 
 	btn.click();
 
@@ -32,7 +35,7 @@ function checkAndConfirm(container) {
 
 
 function observeContainer(container) {
-	console.log('YTMusic-uthere: attach observe container:', container);
+	//console.log('YTMusic-uthere: attach observe container:', container);
 	var mo = new MutationObserver(muts => {
 
 		// debug log:
