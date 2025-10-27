@@ -3,7 +3,7 @@
 // @namespace    Violentmonkey Scripts
 // @match        https://www.youtube.com/*
 // @grant        none
-// @version      1.1.2
+// @version      1.1.3
 // @author       @denisde4ev
 // @description  instantly replaces shorts UI with video UI, without page reload! very fast!
 // @description  (well no reload unless it's loading the page of shorts, then its faster to redirect instead of waiting `history` events to start listening from youtube)
