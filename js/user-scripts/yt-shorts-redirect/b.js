@@ -84,6 +84,8 @@ document.addEventListener("yt-navigate-start", () => {
 	);
 
 	history.go(-1);
-	history.go(1);
+	setTimeout(_ => {
+		history.go(1);
+	}, 0);
 
 });
