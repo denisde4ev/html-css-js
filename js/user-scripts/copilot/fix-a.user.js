@@ -6,7 +6,7 @@
 // @description  and right click open in new tab/new window.
 // @description  (and annoyng 1 additional button to click to confirm opening)
 // @description
-// @description  2025-06-19
+// @description  updated 2026-01-07
 // @author       denisde4ev
 // @homepage     https://github.com/denisde4ev/html-css-js/blob/master/js/user-scripts/copilot/fix-a.user.js
 // @namespace    Violentmonkey Scripts
