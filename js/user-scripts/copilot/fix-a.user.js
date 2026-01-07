@@ -29,7 +29,7 @@ void function() {
 //console.log('debug me: js_qoo0uk7U');
 //debugger
 
-GM_addStyle(` //
+GM_addStyle(`
 
 
 	.x_qoo0uk7U-show,:is(butten,span)[data-url],
