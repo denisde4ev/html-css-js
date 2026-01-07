@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Copilot to use native <a href> link + userselect fix
-// @version      1.2.2
+// @version      1.2.3
 // @match        https://copilot.microsoft.com/*
 // @description  because it messes up middle click to open in new tab.
 // @description  and right click open in new tab/new window.
@@ -13,14 +13,13 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-if (typeof GM_addStyle === 'undefined') { // if executed outside
-	// note: never tested!
 
-	eval('var GM_addStyle');
-	GM_addStyle = function(css) {
-		return (document.head||document.documentElement).insertAdjacentHTML('beforeend', `<style>${css}</style>`);
-	};
-}
+// needed when I/you copy to F12 console
+GM_addStyle =
+  typeof GM_addStyle !== 'undefined' ? GM_addStyle :
+  css => (document.head||document.documentElement).insertAdjacentHTML('beforeend', `<style>${css}</style>`)
+;
+
 
 void function() {
 'use strict';
@@ -30,10 +29,10 @@ void function() {
 //console.log('debug me: js_qoo0uk7U');
 //debugger
 
-GM_addStyle(`
+GM_addStyle(` //
 
 
-	.x_qoo0uk7U-show,button[data-url],
+	.x_qoo0uk7U-show,:is(butten,span)[data-url],
 	/* .x_qoo0uk7U-show > a, */
 	_{ user-select: auto; }
 
@@ -43,7 +42,7 @@ GM_addStyle(`
 	// sadly if we hover while still generating the response, Copilot messes up = opacity 0 to new button, and removes the display of old one
 	// 'x_qoo0uk7U-hidde-next' coz when clicked while generating response it recreates the button --> removes class I'v added .x_qoo0uk7U-hidden
 	*/
-	.x_qoo0uk7U-hidden, .x_qoo0uk7U-hidde-next + button[data-url] { display: none !important; }
+	.x_qoo0uk7U-hidden, .x_qoo0uk7U-hidde-next + :is(butten,span)[data-url] { display: none !important; }
 	.x_qoo0uk7U-show { opacity: unset !important; }
 
 `);
@@ -62,16 +61,23 @@ GM_addStyle(`
 };
 
 
+if(0)
+void function(){
+  // debugging steps
+  var btns = document.querySelectorAll('span[data-url]:not(.x_qoo0uk7U-hidden)')
+}();
+
+
 
 function fixBtn(btn) {
-	if (! (btn.matches('button[data-url]:not(.x_qoo0uk7U-hidden)')) ) return;
-	if (btn.matches('button.x_qoo0uk7U-show + *')) {
-		throw new Error('js_qoo0uk7U: duplicated button?');
+	if (! (btn.matches(':is(butten,span)[data-url]:not(.x_qoo0uk7U-hidden)')) ) return;
+	if (btn.matches(':is(butten,span).x_qoo0uk7U-show + *')) {
+		throw new Error('js_qoo0uk7U: duplicated :is(butten,span)?');
 	};
 	// debug: console.log('js_qoo0uk7U', btn, new Error());
 
 	const link = document.createElement('a');
-	const btn2 = document.createElement('button'); // button wrapper, try to keep the styles
+	const btn2 = document.createElement(btn.tagName); // button wrapper, try to keep the styles
 	link.href = btn.getAttribute('data-url');
 	link.textContent = btn.textContent || 'Link';
 
@@ -81,7 +87,7 @@ function fixBtn(btn) {
 
 		btn2.setAttribute(attr.name, attr.value);
 	};
-	btn2.type = 'button'; // already set, just in case
+	if (btn.tagName === 'BUTTON') btn2.type = 'button'; // already set, just in case
 	//copySafeStyles(btn, btn2);
 
 	{ // slow sites need this. or clicking back will be slow!
