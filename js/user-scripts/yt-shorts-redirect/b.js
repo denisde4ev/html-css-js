@@ -3,7 +3,7 @@
 // @namespace    Violentmonkey Scripts
 // @match        https://www.youtube.com/*
 // @grant        none
-// @version      1.1.2
+// @version      1.1.3
 // @author       @denisde4ev
 // @description  instantly replaces shorts UI with video UI, without page reload! very fast!
 // @description  (well no reload unless it's loading the page of shorts, then its faster to redirect instead of waiting `history` events to start listening from youtube)
@@ -14,6 +14,12 @@
 // @license      GPLv3
 // ==/UserScript==
 
+
+/*
+2025-07-20
+known bug: when loading sometimes youtube wont stop stop the short and play in background,
+so it should first pause old player, then redirect
+*/
 
 // log id: 'js_Oozeiv4O'
 //console.debug('hi js_Oozeiv4O, log to click and debug me');
@@ -78,6 +84,8 @@ document.addEventListener("yt-navigate-start", () => {
 	);
 
 	history.go(-1);
-	history.go(1);
+	setTimeout(_ => {
+		history.go(1);
+	}, 0);
 
 });
