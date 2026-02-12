@@ -1,0 +1,1516 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Emoji Picker
+    script(src="./lib/tw4.js")
+    script.
+      tailwind.config = {
+        darkMode: 'media',
+        theme: {
+          extend: {
+            animation: {
+              'fade-in': 'fadeIn 0.2s ease-in-out',
+              'scale-in': 'scaleIn 0.1s ease-out'
+            }
+          }
+        }
+      }
+    style.
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes scaleIn {
+        from { transform: scale(0.95); }
+        to { transform: scale(1); }
+      }
+      .emoji-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
+        gap: 0.5rem;
+      }
+      @media (min-width: 640px) {
+        .emoji-grid {
+          grid-template-columns: repeat(9, 1fr);
+        }
+      }
+      .emoji-item {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border-radius: 0.5rem;
+        transition: all 0.15s ease;
+        border: 2px solid transparent;
+      }
+      .emoji-item:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+        transform: scale(1.1);
+      }
+      .emoji-item:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background-color: rgba(59, 130, 246, 0.2);
+      }
+      .emoji-item.selected {
+        background-color: #3b82f6;
+        color: white;
+        border-color: #1d4ed8;
+      }
+      .dark .emoji-item:hover {
+        background-color: rgba(59, 130, 246, 0.2);
+      }
+      .dark .emoji-item:focus {
+        background-color: rgba(59, 130, 246, 0.3);
+      }
+      .tooltip {
+        position: absolute;
+        z-index: 1000;
+        pointer-events: none;
+        transform: translate(-50%, -100%);
+        margin-top: -0.5rem;
+      }
+
+  body.bg-gray-50.dark\:bg-gray-900.text-gray-900.dark\:text-gray-100.min-h-screen.font-sans
+    .container.mx-auto.px-4.py-6.max-w-4xl
+      // Header
+      header.mb-6
+        h1.text-3xl.font-bold.text-center.mb-2 Emoji Picker
+        .text-center.text-sm.text-gray-600.dark\:text-gray-400
+          p Use arrow keys to navigate, Tab to switch categories, Enter to select
+          .mt-2.flex.flex-wrap.justify-center.gap-2.text-xs
+            button#toggleOutput.px-3.py-1.rounded-full.bg-blue-100.dark\:bg-blue-900.text-blue-800.dark\:text-blue-200.hover:bg-blue-200.dark\:hover:bg-blue-800.transition-colors(
+              role="switch"
+              aria-checked="false"
+              aria-label="Toggle output format"
+            )
+              span#outputFormat Unicode
+            button#copyMode.px-3.py-1.rounded-full.bg-green-100.dark\:bg-green-900.text-green-800.dark\:text-green-200.hover:bg-green-200.dark\:hover:bg-green-800.transition-colors(
+              aria-label="Copy to clipboard mode"
+            ) Copy Mode
+
+      // Category tabs
+      nav.mb-6(
+        role="tablist"
+        aria-label="Emoji categories"
+      )
+        .flex.flex-wrap.gap-2.justify-center
+          each category, index in categories
+            button.category-tab.px-4.py-2.rounded-lg.border-2.border-transparent.transition-all.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:ring-offset-2.dark\:focus:ring-offset-gray-900(
+              role="tab"
+              aria-selected=index === 0 ? "true" : "false"
+              aria-controls=`panel-${index}`
+              tabindex=index === 0 ? "0" : "-1"
+              data-category=index
+              class=index === 0 ? "bg-blue-500 text-white border-blue-500" : "bg-white dark\:bg-gray-800 text-gray-700 dark\:text-gray-300 border-gray-200 dark\:border-gray-700 hover:bg-gray-50 dark\:hover:bg-gray-700"
+            )
+              .flex.items-center.gap-2
+                span.text-lg= category.icon
+                span.text-sm.font-medium.hidden.sm:inline= category.name
+
+      // Search bar
+      .mb-6
+        .relative
+          input#searchInput.w-full.px-4.py-3.pr-10.rounded-lg.border.border-gray-300.dark\:border-gray-600.bg-white.dark\:bg-gray-800.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-transparent(
+            type="text"
+            placeholder="Search emojis..."
+            aria-label="Search emojis"
+            autocomplete="off"
+          )
+          .absolute.inset-y-0.right-0.flex.items-center.pr-3
+            svg.w-5.h-5.text-gray-400(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+
+      // Emoji panels
+      .emoji-panels
+        each category, categoryIndex in categories
+          .emoji-panel.hidden(
+            role="tabpanel"
+            id=`panel-${categoryIndex}`
+            aria-labelledby=`tab-${categoryIndex}`
+            class=categoryIndex === 0 ? "block" : "hidden"
+          )
+            .bg-white.dark\:bg-gray-800.rounded-lg.shadow-md.border.border-gray-200.dark\:border-gray-700
+              .p-6
+                h2.text-lg.font-semibold.mb-4.flex.items-center.gap-2
+                  span.text-2xl= category.icon
+                  span= category.name
+                .emoji-grid(
+                  role="grid"
+                  aria-label=`${category.name} emojis`
+                  data-category=categoryIndex
+                )
+                  each emoji, emojiIndex in category.emojis
+                    button.emoji-item(
+                      role="gridcell"
+                      tabindex=categoryIndex === 0 && emojiIndex === 0 ? "0" : "-1"
+                      data-emoji=emoji.unicode
+                      data-name=emoji.name
+                      data-category=categoryIndex
+                      data-index=emojiIndex
+                      aria-label=`${emoji.name} emoji`
+                      title=`:${emoji.name}`
+                    )= emoji.unicode
+
+      // Selected emoji display
+      .mt-6.text-center
+        .bg-white.dark\:bg-gray-800.rounded-lg.shadow-md.border.border-gray-200.dark\:border-gray-700.p-6
+          h3.text-lg.font-semibold.mb-2 Selected Emoji
+          .text-6xl.mb-2
+            span#selectedEmoji 😀
+          .text-gray-600.dark\:text-gray-400.mb-4
+            code#selectedName :grinning
+          .flex.gap-2.justify-center.flex-wrap
+            button#copyButton.px-4.py-2.bg-blue-500.hover:bg-blue-600.text-white.rounded-lg.transition-colors.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:ring-offset-2.dark\:focus:ring-offset-gray-900(
+              aria-label="Copy selected emoji"
+            ) Copy
+            button#insertButton.px-4.py-2.bg-green-500.hover:bg-green-600.text-white.rounded-lg.transition-colors.focus:outline-none.focus:ring-2.focus:ring-green-500.focus:ring-offset-2.dark\:focus:ring-offset-gray-900(
+              aria-label="Insert emoji into active input"
+            ) Insert
+
+      // Tooltip
+      .tooltip.hidden.animate-fade-in(
+        role="tooltip"
+        id="emojiTooltip"
+        aria-live="polite"
+      )
+        .bg-gray-900.dark\:bg-gray-100.text-white.dark\:text-gray-900.px-3.py-2.rounded-lg.shadow-lg.text-sm.font-medium.animate-scale-in
+
+      // Mobile-specific instructions
+      .mt-6.text-center.text-sm.text-gray-500.dark\:text-gray-400.sm:hidden
+        p Tap emojis to select, long press for details
+
+    script.
+      // Emoji data structure
+      const categories = [
+        {
+          name: "Smileys & Emotions",
+          icon: "😀",
+          emojis: [
+            { name: "grinning", unicode: "😀" },
+            { name: "smile", unicode: "😄" },
+            { name: "happy", unicode: "😊" },
+            { name: "grin", unicode: "😁" },
+            { name: "laughing", unicode: "😂" },
+            { name: "sweat_smile", unicode: "😅" },
+            { name: "rolling_on_the_floor_laughing", unicode: "🤣" },
+            { name: "joy", unicode: "😂" },
+            { name: "slightly_smiling_face", unicode: "🙂" },
+            { name: "upside_down_face", unicode: "🙃" },
+            { name: "wink", unicode: "😉" },
+            { name: "blush", unicode: "😊" },
+            { name: "innocent", unicode: "😇" },
+            { name: "heart_eyes", unicode: "😍" },
+            { name: "star_struck", unicode: "🤩" },
+            { name: "kissing_heart", unicode: "😘" },
+            { name: "kissing", unicode: "😗" },
+            { name: "relaxed", unicode: "☺️" },
+            { name: "kissing_closed_eyes", unicode: "😚" },
+            { name: "kissing_smiling_eyes", unicode: "😙" },
+            { name: "smiling_face_with_tear", unicode: "🥲" },
+            { name: "yum", unicode: "😋" },
+            { name: "stuck_out_tongue", unicode: "😛" },
+            { name: "stuck_out_tongue_winking_eye", unicode: "😜" },
+            { name: "zany_face", unicode: "🤪" },
+            { name: "stuck_out_tongue_closed_eyes", unicode: "😝" },
+            { name: "money_mouth_face", unicode: "🤑" },
+            { name: "hugging_face", unicode: "🤗" },
+            { name: "hand_over_mouth", unicode: "🤭" },
+            { name: "shushing_face", unicode: "🤫" },
+            { name: "thinking_face", unicode: "🤔" },
+            { name: "zipper_mouth_face", unicode: "🤐" },
+            { name: "raised_eyebrow", unicode: "🤨" },
+            { name: "neutral_face", unicode: "😐" },
+            { name: "expressionless", unicode: "😑" },
+            { name: "no_mouth", unicode: "😶" },
+            { name: "smirk", unicode: "😏" },
+            { name: "unamused", unicode: "😒" },
+            { name: "roll_eyes", unicode: "🙄" },
+            { name: "grimacing", unicode: "😬" },
+            { name: "lying_face", unicode: "🤥" },
+            { name: "relieved", unicode: "😌" },
+            { name: "pensive", unicode: "😔" },
+            { name: "sleepy", unicode: "😪" },
+            { name: "drooling_face", unicode: "🤤" },
+            { name: "sleeping", unicode: "😴" }
+          ]
+        },
+        {
+          name: "People & Body",
+          icon: "👋",
+          emojis: [
+            { name: "wave", unicode: "👋" },
+            { name: "raised_hand", unicode: "✋" },
+            { name: "raised_hand_with_fingers_splayed", unicode: "🖐️" },
+            { name: "vulcan_salute", unicode: "🖖" },
+            { name: "ok_hand", unicode: "👌" },
+            { name: "pinched_fingers", unicode: "🤌" },
+            { name: "pinching_hand", unicode: "🤏" },
+            { name: "v", unicode: "✌️" },
+            { name: "crossed_fingers", unicode: "🤞" },
+            { name: "love_you_gesture", unicode: "🤟" },
+            { name: "metal", unicode: "🤘" },
+            { name: "call_me_hand", unicode: "🤙" },
+            { name: "point_left", unicode: "👈" },
+            { name: "point_right", unicode: "👉" },
+            { name: "point_up_2", unicode: "👆" },
+            { name: "middle_finger", unicode: "🖕" },
+            { name: "point_down", unicode: "👇" },
+            { name: "point_up", unicode: "☝️" },
+            { name: "thumbsup", unicode: "👍" },
+            { name: "thumbsdown", unicode: "👎" },
+            { name: "fist", unicode: "✊" },
+            { name: "fist_oncoming", unicode: "👊" },
+            { name: "facepunch", unicode: "👊" },
+            { name: "left_facing_fist", unicode: "🤛" },
+            { name: "right_facing_fist", unicode: "🤜" },
+            { name: "clap", unicode: "👏" },
+            { name: "raised_hands", unicode: "🙌" },
+            { name: "open_hands", unicode: "👐" },
+            { name: "palms_up_together", unicode: "🤲" },
+            { name: "handshake", unicode: "🤝" },
+            { name: "pray", unicode: "🙏" },
+            { name: "writing_hand", unicode: "✍️" },
+            { name: "nail_care", unicode: "💅" },
+            { name: "selfie", unicode: "🤳" },
+            { name: "muscle", unicode: "💪" },
+            { name: "mechanical_arm", unicode: "🦾" },
+            { name: "mechanical_leg", unicode: "🦿" },
+            { name: "leg", unicode: "🦵" },
+            { name: "foot", unicode: "🦶" },
+            { name: "ear", unicode: "👂" },
+            { name: "ear_with_hearing_aid", unicode: "🦻" },
+            { name: "nose", unicode: "👃" },
+            { name: "brain", unicode: "🧠" },
+            { name: "anatomical_heart", unicode: "🫀" },
+            { name: "lungs", unicode: "🫁" },
+            { name: "tooth", unicode: "🦷" },
+            { name: "bone", unicode: "🦴" },
+            { name: "eyes", unicode: "👀" },
+            { name: "eye", unicode: "👁️" },
+            { name: "tongue", unicode: "👅" },
+            { name: "lips", unicode: "👄" }
+          ]
+        },
+        {
+          name: "Animals & Nature",
+          icon: "🐵",
+          emojis: [
+            { name: "monkey_face", unicode: "🐵" },
+            { name: "monkey", unicode: "🐒" },
+            { name: "gorilla", unicode: "🦍" },
+            { name: "orangutan", unicode: "🦧" },
+            { name: "dog", unicode: "🐶" },
+            { name: "dog2", unicode: "🐕" },
+            { name: "guide_dog", unicode: "🦮" },
+            { name: "service_dog", unicode: "🐕‍🦺" },
+            { name: "poodle", unicode: "🐩" },
+            { name: "wolf", unicode: "🐺" },
+            { name: "fox_face", unicode: "🦊" },
+            { name: "raccoon", unicode: "🦝" },
+            { name: "cat", unicode: "🐱" },
+            { name: "cat2", unicode: "🐈" },
+            { name: "black_cat", unicode: "🐈‍⬛" },
+            { name: "lion", unicode: "🦁" },
+            { name: "tiger", unicode: "🐯" },
+            { name: "tiger2", unicode: "🐅" },
+            { name: "leopard", unicode: "🐆" },
+            { name: "horse", unicode: "🐴" },
+            { name: "racehorse", unicode: "🐎" },
+            { name: "unicorn", unicode: "🦄" },
+            { name: "zebra", unicode: "🦓" },
+            { name: "deer", unicode: "🦌" },
+            { name: "bison", unicode: "🦬" },
+            { name: "cow", unicode: "🐮" },
+            { name: "ox", unicode: "🐂" },
+            { name: "water_buffalo", unicode: "🐃" },
+            { name: "cow2", unicode: "🐄" },
+            { name: "pig", unicode: "🐷" },
+            { name: "pig2", unicode: "🐖" },
+            { name: "boar", unicode: "🐗" },
+            { name: "pig_nose", unicode: "🐽" },
+            { name: "ram", unicode: "🐏" },
+            { name: "sheep", unicode: "🐑" },
+            { name: "goat", unicode: "🐐" },
+            { name: "dromedary_camel", unicode: "🐪" },
+            { name: "camel", unicode: "🐫" },
+            { name: "llama", unicode: "🦙" },
+            { name: "giraffe", unicode: "🦒" },
+            { name: "elephant", unicode: "🐘" },
+            { name: "mammoth", unicode: "🦣" },
+            { name: "rhinoceros", unicode: "🦏" },
+            { name: "hippopotamus", unicode: "🦛" },
+            { name: "mouse", unicode: "🐭" },
+            { name: "mouse2", unicode: "🐁" },
+            { name: "rat", unicode: "🐀" },
+            { name: "hamster", unicode: "🐹" },
+            { name: "rabbit", unicode: "🐰" },
+            { name: "rabbit2", unicode: "🐇" }
+          ]
+        },
+        {
+          name: "Food & Drink",
+          icon: "☕",
+          emojis: [
+            { name: "grapes", unicode: "🍇" },
+            { name: "melon", unicode: "🍈" },
+            { name: "watermelon", unicode: "🍉" },
+            { name: "tangerine", unicode: "🍊" },
+            { name: "lemon", unicode: "🍋" },
+            { name: "banana", unicode: "🍌" },
+            { name: "pineapple", unicode: "🍍" },
+            { name: "mango", unicode: "🥭" },
+            { name: "apple", unicode: "🍎" },
+            { name: "green_apple", unicode: "🍏" },
+            { name: "pear", unicode: "🍐" },
+            { name: "peach", unicode: "🍑" },
+            { name: "cherries", unicode: "🍒" },
+            { name: "strawberry", unicode: "🍓" },
+            { name: "blueberries", unicode: "🫐" },
+            { name: "kiwi_fruit", unicode: "🥝" },
+            { name: "tomato", unicode: "🍅" },
+            { name: "olive", unicode: "🫒" },
+            { name: "coconut", unicode: "🥥" },
+            { name: "avocado", unicode: "🥑" },
+            { name: "eggplant", unicode: "🍆" },
+            { name: "potato", unicode: "🥔" },
+            { name: "carrot", unicode: "🥕" },
+            { name: "corn", unicode: "🌽" },
+            { name: "hot_pepper", unicode: "🌶️" },
+            { name: "bell_pepper", unicode: "🫑" },
+            { name: "cucumber", unicode: "🥒" },
+            { name: "leafy_greens", unicode: "🥬" },
+            { name: "broccoli", unicode: "🥦" },
+            { name: "garlic", unicode: "🧄" },
+            { name: "onion", unicode: "🧅" },
+            { name: "mushroom", unicode: "🍄" },
+            { name: "peanuts", unicode: "🥜" },
+            { name: "chestnut", unicode: "🌰" },
+            { name: "bread", unicode: "🍞" },
+            { name: "croissant", unicode: "🥐" },
+            { name: "baguette_bread", unicode: "🥖" },
+            { name: "flatbread", unicode: "🫓" },
+            { name: "pretzel", unicode: "🥨" },
+            { name: "bagel", unicode: "🥯" },
+            { name: "pancakes", unicode: "🥞" },
+            { name: "waffle", unicode: "🧇" },
+            { name: "cheese", unicode: "🧀" },
+            { name: "meat_on_bone", unicode: "🍖" },
+            { name: "poultry_leg", unicode: "🍗" },
+            { name: "cut_of_meat", unicode: "🥩" },
+            { name: "bacon", unicode: "🥓" },
+            { name: "hamburger", unicode: "🍔" },
+            { name: "fries", unicode: "🍟" },
+            { name: "pizza", unicode: "🍕" },
+            { name: "hotdog", unicode: "🌭" },
+            { name: "sandwich", unicode: "🥪" },
+            { name: "taco", unicode: "🌮" },
+            { name: "burrito", unicode: "🌯" },
+            { name: "tamale", unicode: "🫔" },
+            { name: "stuffed_flatbread", unicode: "🥙" },
+            { name: "falafel", unicode: "🧆" },
+            { name: "egg", unicode: "🥚" },
+            { name: "fried_egg", unicode: "🍳" },
+            { name: "shallow_pan_of_food", unicode: "🥘" },
+            { name: "stew", unicode: "🍲" },
+            { name: "fondue", unicode: "🫕" },
+            { name: "bowl_with_spoon", unicode: "🥣" },
+            { name: "green_salad", unicode: "🥗" },
+            { name: "popcorn", unicode: "🍿" },
+            { name: "butter", unicode: "🧈" },
+            { name: "salt", unicode: "🧂" },
+            { name: "canned_food", unicode: "🥫" },
+            { name: "bento", unicode: "🍱" },
+            { name: "rice_cracker", unicode: "🍘" },
+            { name: "rice_ball", unicode: "🍙" },
+            { name: "rice", unicode: "🍚" },
+            { name: "curry", unicode: "🍛" },
+            { name: "ramen", unicode: "🍜" },
+            { name: "spaghetti", unicode: "🍝" },
+            { name: "sweet_potato", unicode: "🍠" },
+            { name: "oden", unicode: "🍢" },
+            { name: "sushi", unicode: "🍣" },
+            { name: "fried_shrimp", unicode: "🍤" },
+            { name: "fish_cake", unicode: "🍥" },
+            { name: "moon_cake", unicode: "🥮" },
+            { name: "dango", unicode: "🍡" },
+            { name: "dumpling", unicode: "🥟" },
+            { name: "fortune_cookie", unicode: "🥠" },
+            { name: "takeout_box", unicode: "🥡" },
+            { name: "crab", unicode: "🦀" },
+            { name: "lobster", unicode: "🦞" },
+            { name: "shrimp", unicode: "🦐" },
+            { name: "squid", unicode: "🦑" },
+            { name: "oyster", unicode: "🦪" },
+            { name: "icecream", unicode: "🍦" },
+            { name: "shaved_ice", unicode: "🍧" },
+            { name: "ice_cream", unicode: "🍨" },
+            { name: "doughnut", unicode: "🍩" },
+            { name: "cookie", unicode: "🍪" },
+            { name: "birthday", unicode: "🎂" },
+            { name: "cake", unicode: "🍰" },
+            { name: "cupcake", unicode: "🧁" },
+            { name: "pie", unicode: "🥧" },
+            { name: "chocolate_bar", unicode: "🍫" },
+            { name: "candy", unicode: "🍬" },
+            { name: "lollipop", unicode: "🍭" },
+            { name: "custard", unicode: "🍮" },
+            { name: "honey_pot", unicode: "🍯" },
+            { name: "baby_bottle", unicode: "🍼" },
+            { name: "milk_glass", unicode: "🥛" },
+            { name: "coffee", unicode: "☕" },
+            { name: "teapot", unicode: "🫖" },
+            { name: "tea", unicode: "🍵" },
+            { name: "sake", unicode: "🍶" },
+            { name: "champagne", unicode: "🍾" },
+            { name: "wine_glass", unicode: "🍷" },
+            { name: "cocktail", unicode: "🍸" },
+            { name: "tropical_drink", unicode: "🍹" },
+            { name: "beer", unicode: "🍺" },
+            { name: "beers", unicode: "🍻" },
+            { name: "clinking_glasses", unicode: "🥂" },
+            { name: "tumbler_glass", unicode: "🥃" },
+            { name: "cup_with_straw", unicode: "🥤" },
+            { name: "bubble_tea", unicode: "🧋" },
+            { name: "beverage_box", unicode: "🧃" },
+            { name: "mate", unicode: "🧉" },
+            { name: "ice_cube", unicode: "🧊" },
+            { name: "chopsticks", unicode: "🥢" },
+            { name: "plate_with_cutlery", unicode: "🍽️" },
+            { name: "fork_and_knife", unicode: "🍴" },
+            { name: "spoon", unicode: "🥄" },
+            { name: "hocho", unicode: "🔪" },
+            { name: "amphora", unicode: "🏺" }
+          ]
+        },
+        {
+          name: "Travel & Places",
+          icon: "☔",
+          emojis: [
+            { name: "earth_africa", unicode: "🌍" },
+            { name: "earth_americas", unicode: "🌎" },
+            { name: "earth_asia", unicode: "🌏" },
+            { name: "globe_with_meridians", unicode: "🌐" },
+            { name: "world_map", unicode: "🗺️" },
+            { name: "japan", unicode: "🗾" },
+            { name: "compass", unicode: "🧭" },
+            { name: "mountain_snow", unicode: "🏔️" },
+            { name: "mountain", unicode: "⛰️" },
+            { name: "volcano", unicode: "🌋" },
+            { name: "mount_fuji", unicode: "🗻" },
+            { name: "camping", unicode: "🏕️" },
+            { name: "beach_umbrella", unicode: "🏖️" },
+            { name: "desert", unicode: "🏜️" },
+            { name: "desert_island", unicode: "🏝️" },
+            { name: "national_park", unicode: "🏞️" },
+            { name: "stadium", unicode: "🏟️" },
+            { name: "classical_building", unicode: "🏛️" },
+            { name: "building_construction", unicode: "🏗️" },
+            { name: "bricks", unicode: "🧱" },
+            { name: "rock", unicode: "🪨" },
+            { name: "wood", unicode: "🪵" },
+            { name: "hut", unicode: "🛖" },
+            { name: "houses", unicode: "🏘️" },
+            { name: "derelict_house", unicode: "🏚️" },
+            { name: "house", unicode: "🏠" },
+            { name: "house_with_garden", unicode: "🏡" },
+            { name: "office", unicode: "🏢" },
+            { name: "post_office", unicode: "🏣" },
+            { name: "european_post_office", unicode: "🏤" },
+            { name: "hospital", unicode: "🏥" },
+            { name: "bank", unicode: "🏦" },
+            { name: "hotel", unicode: "🏨" },
+            { name: "love_hotel", unicode: "🏩" },
+            { name: "convenience_store", unicode: "🏪" },
+            { name: "school", unicode: "🏫" },
+            { name: "department_store", unicode: "🏬" },
+            { name: "factory", unicode: "🏭" },
+            { name: "japanese_castle", unicode: "🏯" },
+            { name: "european_castle", unicode: "🏰" },
+            { name: "wedding", unicode: "💒" },
+            { name: "tokyo_tower", unicode: "🗼" },
+            { name: "statue_of_liberty", unicode: "🗽" },
+            { name: "church", unicode: "⛪" },
+            { name: "mosque", unicode: "🕌" },
+            { name: "hindu_temple", unicode: "🛕" },
+            { name: "synagogue", unicode: "🕍" },
+            { name: "shinto_shrine", unicode: "⛩️" },
+            { name: "kaaba", unicode: "🕋" }
+          ]
+        },
+        {
+          name: "Activities",
+          icon: "✨",
+          emojis: [
+            { name: "sparkles", unicode: "✨" },
+            { name: "jack_o_lantern", unicode: "🎃" },
+            { name: "christmas_tree", unicode: "🎄" },
+            { name: "fireworks", unicode: "🎆" },
+            { name: "sparkler", unicode: "🎇" },
+            { name: "firecracker", unicode: "🧨" },
+            { name: "balloon", unicode: "🎈" },
+            { name: "tada", unicode: "🎉" },
+            { name: "confetti_ball", unicode: "🎊" },
+            { name: "tanabata_tree", unicode: "🎋" },
+            { name: "bamboo", unicode: "🎍" },
+            { name: "dolls", unicode: "🎎" },
+            { name: "flags", unicode: "🎏" },
+            { name: "wind_chime", unicode: "🎐" },
+            { name: "rice_scene", unicode: "🎑" },
+            { name: "red_envelope", unicode: "🧧" },
+            { name: "ribbon", unicode: "🎀" },
+            { name: "gift", unicode: "🎁" },
+            { name: "reminder_ribbon", unicode: "🎗️" },
+            { name: "tickets", unicode: "🎟️" },
+            { name: "ticket", unicode: "🎫" },
+            { name: "medal_military", unicode: "🎖️" },
+            { name: "trophy", unicode: "🏆" },
+            { name: "medal_sports", unicode: "🏅" },
+            { name: "1st_place_medal", unicode: "🥇" },
+            { name: "2nd_place_medal", unicode: "🥈" },
+            { name: "3rd_place_medal", unicode: "🥉" },
+            { name: "soccer", unicode: "⚽" },
+            { name: "baseball", unicode: "⚾" },
+            { name: "softball", unicode: "🥎" },
+            { name: "basketball", unicode: "🏀" },
+            { name: "volleyball", unicode: "🏐" },
+            { name: "football", unicode: "🏈" },
+            { name: "rugby_football", unicode: "🏉" },
+            { name: "tennis", unicode: "🎾" },
+            { name: "flying_disc", unicode: "🥏" },
+            { name: "bowling", unicode: "🎳" },
+            { name: "cricket_game", unicode: "🏏" },
+            { name: "field_hockey", unicode: "🏑" },
+            { name: "ice_hockey", unicode: "🏒" },
+            { name: "lacrosse", unicode: "🥍" },
+            { name: "ping_pong", unicode: "🏓" },
+            { name: "badminton", unicode: "🏸" },
+            { name: "boxing_glove", unicode: "🥊" },
+            { name: "martial_arts_uniform", unicode: "🥋" },
+            { name: "goal_net", unicode: "🥅" },
+            { name: "golf", unicode: "⛳" },
+            { name: "ice_skate", unicode: "⛸️" },
+            { name: "fishing_pole_and_fish", unicode: "🎣" },
+            { name: "diving_mask", unicode: "🤿" },
+            { name: "running_shirt_with_sash", unicode: "🎽" },
+            { name: "ski", unicode: "🎿" },
+            { name: "sled", unicode: "🛷" },
+            { name: "curling_stone", unicode: "🥌" }
+          ]
+        },
+        {
+          name: "Objects",
+          icon: "👓",
+          emojis: [
+            { name: "eyeglasses", unicode: "👓" },
+            { name: "dark_sunglasses", unicode: "🕶️" },
+            { name: "goggles", unicode: "🥽" },
+            { name: "lab_coat", unicode: "🥼" },
+            { name: "safety_vest", unicode: "🦺" },
+            { name: "necktie", unicode: "👔" },
+            { name: "shirt", unicode: "👕" },
+            { name: "jeans", unicode: "👖" },
+            { name: "scarf", unicode: "🧣" },
+            { name: "gloves", unicode: "🧤" },
+            { name: "coat", unicode: "🧥" },
+            { name: "socks", unicode: "🧦" },
+            { name: "dress", unicode: "👗" },
+            { name: "kimono", unicode: "👘" },
+            { name: "sari", unicode: "🥻" },
+            { name: "one_piece_swimsuit", unicode: "🩱" },
+            { name: "briefs", unicode: "🩲" },
+            { name: "shorts", unicode: "🩳" },
+            { name: "bikini", unicode: "👙" },
+            { name: "womans_clothes", unicode: "👚" },
+            { name: "purse", unicode: "👛" },
+            { name: "handbag", unicode: "👜" },
+            { name: "pouch", unicode: "👝" },
+            { name: "shopping", unicode: "🛍️" },
+            { name: "school_satchel", unicode: "🎒" },
+            { name: "thong_sandal", unicode: "🩴" },
+            { name: "mans_shoe", unicode: "👞" },
+            { name: "athletic_shoe", unicode: "👟" },
+            { name: "hiking_boot", unicode: "🥾" },
+            { name: "flat_shoe", unicode: "🥿" },
+            { name: "high_heel", unicode: "👠" },
+            { name: "sandal", unicode: "👡" },
+            { name: "ballet_shoes", unicode: "🩰" },
+            { name: "boot", unicode: "👢" },
+            { name: "crown", unicode: "👑" },
+            { name: "womans_hat", unicode: "👒" },
+            { name: "tophat", unicode: "🎩" },
+            { name: "mortar_board", unicode: "🎓" },
+            { name: "billed_cap", unicode: "🧢" },
+            { name: "military_helmet", unicode: "🪖" },
+            { name: "rescue_worker_helmet", unicode: "⛑️" },
+            { name: "prayer_beads", unicode: "📿" },
+            { name: "lipstick", unicode: "💄" },
+            { name: "ring", unicode: "💍" },
+            { name: "gem", unicode: "💎" }
+          ]
+        },
+        {
+          name: "Symbols",
+          icon: "♈",
+          emojis: [
+            { name: "aries", unicode: "♈" },
+            { name: "taurus", unicode: "♉" },
+            { name: "gemini", unicode: "♊" },
+            { name: "cancer", unicode: "♋" },
+            { name: "leo", unicode: "♌" },
+            { name: "virgo", unicode: "♍" },
+            { name: "libra", unicode: "♎" },
+            { name: "scorpius", unicode: "♏" },
+            { name: "sagittarius", unicode: "♐" },
+            { name: "capricorn", unicode: "♑" },
+            { name: "aquarius", unicode: "♒" },
+            { name: "pisces", unicode: "♓" },
+            { name: "ophiuchus", unicode: "⛎" },
+            { name: "white_check_mark", unicode: "✅" },
+            { name: "question", unicode: "❓" },
+            { name: "grey_question", unicode: "❔" },
+            { name: "grey_exclamation", unicode: "❕" },
+            { name: "exclamation", unicode: "❗" },
+            { name: "heavy_plus_sign", unicode: "➕" },
+            { name: "heavy_minus_sign", unicode: "➖" },
+            { name: "heavy_division_sign", unicode: "➗" },
+            { name: "heavy_multiplication_x", unicode: "✖️" },
+            { name: "infinity", unicode: "♾️" },
+            { name: "bangbang", unicode: "‼️" },
+            { name: "interrobang", unicode: "⁉️" },
+            { name: "wavy_dash", unicode: "〰️" },
+            { name: "currency_exchange", unicode: "💱" },
+            { name: "heavy_dollar_sign", unicode: "💲" },
+            { name: "medical_symbol", unicode: "⚕️" },
+            { name: "recycle", unicode: "♻️" },
+            { name: "fleur_de_lis", unicode: "⚜️" },
+            { name: "trident", unicode: "🔱" },
+            { name: "name_badge", unicode: "📛" },
+            { name: "beginner", unicode: "🔰" },
+            { name: "o", unicode: "⭕" },
+            { name: "white_check_mark", unicode: "✅" },
+            { name: "ballot_box_with_check", unicode: "☑️" },
+            { name: "heavy_check_mark", unicode: "✔️" },
+            { name: "x", unicode: "❌" },
+            { name: "negative_squared_cross_mark", unicode: "❎" },
+            { name: "curly_loop", unicode: "➰" },
+            { name: "loop", unicode: "➿" },
+            { name: "part_alternation_mark", unicode: "〽️" },
+            { name: "eight_spoked_asterisk", unicode: "✳️" },
+            { name: "eight_pointed_black_star", unicode: "✴️" },
+            { name: "sparkle", unicode: "❇️" },
+            { name: "copyright", unicode: "©️" },
+            { name: "registered", unicode: "®️" },
+            { name: "tm", unicode: "™️" }
+          ]
+        },
+        {
+          name: "Flags",
+          icon: "🏁",
+          emojis: [
+            { name: "checkered_flag", unicode: "🏁" },
+            { name: "triangular_flag_on_post", unicode: "🚩" },
+            { name: "crossed_flags", unicode: "🎌" },
+            { name: "black_flag", unicode: "🏴" },
+            { name: "white_flag", unicode: "🏳️" },
+            { name: "rainbow_flag", unicode: "🏳️‍🌈" },
+            { name: "transgender_flag", unicode: "🏳️‍⚧️" },
+            { name: "pirate_flag", unicode: "🏴‍☠️" },
+            { name: "flag_af", unicode: "🇦🇫" },
+            { name: "flag_ax", unicode: "🇦🇽" },
+            { name: "flag_al", unicode: "🇦🇱" },
+            { name: "flag_dz", unicode: "🇩🇿" },
+            { name: "flag_as", unicode: "🇦🇸" },
+            { name: "flag_ad", unicode: "🇦🇩" },
+            { name: "flag_ao", unicode: "🇦🇴" },
+            { name: "flag_ai", unicode: "🇦🇮" },
+            { name: "flag_aq", unicode: "🇦🇶" },
+            { name: "flag_ag", unicode: "🇦🇬" },
+            { name: "flag_ar", unicode: "🇦🇷" },
+            { name: "flag_am", unicode: "🇦🇲" },
+            { name: "flag_aw", unicode: "🇦🇼" },
+            { name: "flag_au", unicode: "🇦🇺" },
+            { name: "flag_at", unicode: "🇦🇹" },
+            { name: "flag_az", unicode: "🇦🇿" },
+            { name: "flag_bs", unicode: "🇧🇸" },
+            { name: "flag_bh", unicode: "🇧🇭" },
+            { name: "flag_bd", unicode: "🇧🇩" },
+            { name: "flag_bb", unicode: "🇧🇧" },
+            { name: "flag_by", unicode: "🇧🇾" },
+            { name: "flag_be", unicode: "🇧🇪" },
+            { name: "flag_bz", unicode: "🇧🇿" },
+            { name: "flag_bj", unicode: "🇧🇯" },
+            { name: "flag_bm", unicode: "🇧🇲" },
+            { name: "flag_bt", unicode: "🇧🇹" },
+            { name: "flag_bo", unicode: "🇧🇴" },
+            { name: "flag_ba", unicode: "🇧🇦" },
+            { name: "flag_bw", unicode: "🇧🇼" },
+            { name: "flag_br", unicode: "🇧🇷" },
+            { name: "flag_io", unicode: "🇮🇴" },
+            { name: "flag_bn", unicode: "🇧🇳" },
+            { name: "flag_bg", unicode: "🇧🇬" },
+            { name: "flag_bf", unicode: "🇧🇫" },
+            { name: "flag_bi", unicode: "🇧🇮" },
+            { name: "flag_kh", unicode: "🇰🇭" },
+            { name: "flag_cm", unicode: "🇨🇲" },
+            { name: "flag_ca", unicode: "🇨🇦" },
+            { name: "flag_ic", unicode: "🇮🇨" },
+            { name: "flag_cv", unicode: "🇨🇻" },
+            { name: "flag_bq", unicode: "🇧🇶" },
+            { name: "flag_ky", unicode: "🇰🇾" },
+            { name: "flag_cf", unicode: "🇨🇫" },
+            { name: "flag_td", unicode: "🇹🇩" },
+            { name: "flag_cl", unicode: "🇨🇱" },
+            { name: "flag_cn", unicode: "🇨🇳" },
+            { name: "flag_cx", unicode: "🇨🇽" },
+            { name: "flag_cc", unicode: "🇨🇨" },
+            { name: "flag_co", unicode: "🇨🇴" },
+            { name: "flag_km", unicode: "🇰🇲" },
+            { name: "flag_cg", unicode: "🇨🇬" },
+            { name: "flag_cd", unicode: "🇨🇩" },
+            { name: "flag_ck", unicode: "🇨🇰" },
+            { name: "flag_cr", unicode: "🇨🇷" },
+            { name: "flag_ci", unicode: "🇨🇮" },
+            { name: "flag_hr", unicode: "🇭🇷" },
+            { name: "flag_cu", unicode: "🇨🇺" },
+            { name: "flag_cw", unicode: "🇨🇼" },
+            { name: "flag_cy", unicode: "🇨🇾" },
+            { name: "flag_cz", unicode: "🇨🇿" },
+            { name: "flag_dk", unicode: "🇩🇰" },
+            { name: "flag_dj", unicode: "🇩🇯" },
+            { name: "flag_dm", unicode: "🇩🇲" },
+            { name: "flag_do", unicode: "🇩🇴" },
+            { name: "flag_ec", unicode: "🇪🇨" },
+            { name: "flag_eg", unicode: "🇪🇬" },
+            { name: "flag_sv", unicode: "🇸🇻" },
+            { name: "flag_gq", unicode: "🇬🇶" },
+            { name: "flag_er", unicode: "🇪🇷" },
+            { name: "flag_ee", unicode: "🇪🇪" },
+            { name: "flag_et", unicode: "🇪🇹" },
+            { name: "flag_eu", unicode: "🇪🇺" },
+            { name: "flag_fk", unicode: "🇫🇰" },
+            { name: "flag_fo", unicode: "🇫🇴" },
+            { name: "flag_fj", unicode: "🇫🇯" },
+            { name: "flag_fi", unicode: "🇫🇮" },
+            { name: "flag_fr", unicode: "🇫🇷" },
+            { name: "flag_gf", unicode: "🇬🇫" },
+            { name: "flag_pf", unicode: "🇵🇫" },
+            { name: "flag_tf", unicode: "🇹🇫" },
+            { name: "flag_ga", unicode: "🇬🇦" },
+            { name: "flag_gm", unicode: "🇬🇲" },
+            { name: "flag_ge", unicode: "🇬🇪" },
+            { name: "flag_de", unicode: "🇩🇪" },
+            { name: "flag_gh", unicode: "🇬🇭" },
+            { name: "flag_gi", unicode: "🇬🇮" },
+            { name: "flag_gr", unicode: "🇬🇷" },
+            { name: "flag_gl", unicode: "🇬🇱" },
+            { name: "flag_gd", unicode: "🇬🇩" },
+            { name: "flag_gp", unicode: "🇬🇵" },
+            { name: "flag_gu", unicode: "🇬🇺" },
+            { name: "flag_gt", unicode: "🇬🇹" },
+            { name: "flag_gg", unicode: "🇬🇬" },
+            { name: "flag_gn", unicode: "🇬🇳" },
+            { name: "flag_gw", unicode: "🇬🇼" },
+            { name: "flag_gy", unicode: "🇬🇾" },
+            { name: "flag_ht", unicode: "🇭🇹" },
+            { name: "flag_hn", unicode: "🇭🇳" },
+            { name: "flag_hk", unicode: "🇭🇰" },
+            { name: "flag_hu", unicode: "🇭🇺" },
+            { name: "flag_is", unicode: "🇮🇸" },
+            { name: "flag_in", unicode: "🇮🇳" },
+            { name: "flag_id", unicode: "🇮🇩" },
+            { name: "flag_ir", unicode: "🇮🇷" },
+            { name: "flag_iq", unicode: "🇮🇶" },
+            { name: "flag_ie", unicode: "🇮🇪" },
+            { name: "flag_im", unicode: "🇮🇲" },
+            { name: "flag_il", unicode: "🇮🇱" },
+            { name: "flag_it", unicode: "🇮🇹" },
+            { name: "flag_jm", unicode: "🇯🇲" },
+            { name: "flag_jp", unicode: "🇯🇵" },
+            { name: "flag_je", unicode: "🇯🇪" },
+            { name: "flag_jo", unicode: "🇯🇴" },
+            { name: "flag_kz", unicode: "🇰🇿" },
+            { name: "flag_ke", unicode: "🇰🇪" },
+            { name: "flag_ki", unicode: "🇰🇮" },
+            { name: "flag_xk", unicode: "🇽🇰" },
+            { name: "flag_kw", unicode: "🇰🇼" },
+            { name: "flag_kg", unicode: "🇰🇬" },
+            { name: "flag_la", unicode: "🇱🇦" },
+            { name: "flag_lv", unicode: "🇱🇻" },
+            { name: "flag_lb", unicode: "🇱🇧" },
+            { name: "flag_ls", unicode: "🇱🇸" },
+            { name: "flag_lr", unicode: "🇱🇷" },
+            { name: "flag_ly", unicode: "🇱🇾" },
+            { name: "flag_li", unicode: "🇱🇮" },
+            { name: "flag_lt", unicode: "🇱🇹" },
+            { name: "flag_lu", unicode: "🇱🇺" },
+            { name: "flag_mo", unicode: "🇲🇴" },
+            { name: "flag_mk", unicode: "🇲🇰" },
+            { name: "flag_mg", unicode: "🇲🇬" },
+            { name: "flag_mw", unicode: "🇲🇼" },
+            { name: "flag_my", unicode: "🇲🇾" },
+            { name: "flag_mv", unicode: "🇲🇻" },
+            { name: "flag_ml", unicode: "🇲🇱" },
+            { name: "flag_mt", unicode: "🇲🇹" },
+            { name: "flag_mh", unicode: "🇲🇭" },
+            { name: "flag_mq", unicode: "🇲🇶" },
+            { name: "flag_mr", unicode: "🇲🇷" },
+            { name: "flag_mu", unicode: "🇲🇺" },
+            { name: "flag_yt", unicode: "🇾🇹" },
+            { name: "flag_mx", unicode: "🇲🇽" },
+            { name: "flag_fm", unicode: "🇫🇲" },
+            { name: "flag_md", unicode: "🇲🇩" },
+            { name: "flag_mc", unicode: "🇲🇨" },
+            { name: "flag_mn", unicode: "🇲🇳" },
+            { name: "flag_me", unicode: "🇲🇪" },
+            { name: "flag_ms", unicode: "🇲🇸" },
+            { name: "flag_ma", unicode: "🇲🇦" },
+            { name: "flag_mz", unicode: "🇲🇿" },
+            { name: "flag_mm", unicode: "🇲🇲" },
+            { name: "flag_na", unicode: "🇳🇦" },
+            { name: "flag_nr", unicode: "🇳🇷" },
+            { name: "flag_np", unicode: "🇳🇵" },
+            { name: "flag_nl", unicode: "🇳🇱" },
+            { name: "flag_nc", unicode: "🇳🇨" },
+            { name: "flag_nz", unicode: "🇳🇿" },
+            { name: "flag_ni", unicode: "🇳🇮" },
+            { name: "flag_ne", unicode: "🇳🇪" },
+            { name: "flag_ng", unicode: "🇳🇬" },
+            { name: "flag_nu", unicode: "🇳🇺" },
+            { name: "flag_nf", unicode: "🇳🇫" },
+            { name: "flag_kp", unicode: "🇰🇵" },
+            { name: "flag_mp", unicode: "🇲🇵" },
+            { name: "flag_no", unicode: "🇳🇴" },
+            { name: "flag_om", unicode: "🇴🇲" },
+            { name: "flag_pk", unicode: "🇵🇰" },
+            { name: "flag_pw", unicode: "🇵🇼" },
+            { name: "flag_ps", unicode: "🇵🇸" },
+            { name: "flag_pa", unicode: "🇵🇦" },
+            { name: "flag_pg", unicode: "🇵🇬" },
+            { name: "flag_py", unicode: "🇵🇾" },
+            { name: "flag_pe", unicode: "🇵🇪" },
+            { name: "flag_ph", unicode: "🇵🇭" },
+            { name: "flag_pn", unicode: "🇵🇳" },
+            { name: "flag_pl", unicode: "🇵🇱" },
+            { name: "flag_pt", unicode: "🇵🇹" },
+            { name: "flag_pr", unicode: "🇵🇷" },
+            { name: "flag_qa", unicode: "🇶🇦" },
+            { name: "flag_re", unicode: "🇷🇪" },
+            { name: "flag_ro", unicode: "🇷🇴" },
+            { name: "flag_ru", unicode: "🇷🇺" },
+            { name: "flag_rw", unicode: "🇷🇼" },
+            { name: "flag_ws", unicode: "🇼🇸" },
+            { name: "flag_sm", unicode: "🇸🇲" },
+            { name: "flag_st", unicode: "🇸🇹" },
+            { name: "flag_sa", unicode: "🇸🇦" },
+            { name: "flag_sn", unicode: "🇸🇳" },
+            { name: "flag_rs", unicode: "🇷🇸" },
+            { name: "flag_sc", unicode: "🇸🇨" },
+            { name: "flag_sl", unicode: "🇸🇱" },
+            { name: "flag_sg", unicode: "🇸🇬" },
+            { name: "flag_sx", unicode: "🇸🇽" },
+            { name: "flag_sk", unicode: "🇸🇰" },
+            { name: "flag_si", unicode: "🇸🇮" },
+            { name: "flag_sb", unicode: "🇸🇧" },
+            { name: "flag_so", unicode: "🇸🇴" },
+            { name: "flag_za", unicode: "🇿🇦" },
+            { name: "flag_gs", unicode: "🇬🇸" },
+            { name: "flag_kr", unicode: "🇰🇷" },
+            { name: "flag_ss", unicode: "🇸🇸" },
+            { name: "flag_es", unicode: "🇪🇸" },
+            { name: "flag_lk", unicode: "🇱🇰" },
+            { name: "flag_bl", unicode: "🇧🇱" },
+            { name: "flag_sh", unicode: "🇸🇭" },
+            { name: "flag_kn", unicode: "🇰🇳" },
+            { name: "flag_lc", unicode: "🇱🇨" },
+            { name: "flag_mf", unicode: "🇲🇫" },
+            { name: "flag_pm", unicode: "🇵🇲" },
+            { name: "flag_vc", unicode: "🇻🇨" },
+            { name: "flag_sd", unicode: "🇸🇩" },
+            { name: "flag_sr", unicode: "🇸🇷" },
+            { name: "flag_sj", unicode: "🇸🇯" },
+            { name: "flag_sz", unicode: "🇸🇿" },
+            { name: "flag_se", unicode: "🇸🇪" },
+            { name: "flag_ch", unicode: "🇨🇭" },
+            { name: "flag_sy", unicode: "🇸🇾" },
+            { name: "flag_tw", unicode: "🇹🇼" },
+            { name: "flag_tj", unicode: "🇹🇯" },
+            { name: "flag_tz", unicode: "🇹🇿" },
+            { name: "flag_th", unicode: "🇹🇭" },
+            { name: "flag_tl", unicode: "🇹🇱" },
+            { name: "flag_tg", unicode: "🇹🇬" },
+            { name: "flag_tk", unicode: "🇹🇰" },
+            { name: "flag_to", unicode: "🇹🇴" },
+            { name: "flag_tt", unicode: "🇹🇹" },
+            { name: "flag_tn", unicode: "🇹🇳" },
+            { name: "flag_tr", unicode: "🇹🇷" },
+            { name: "flag_tm", unicode: "🇹🇲" },
+            { name: "flag_tc", unicode: "🇹🇨" },
+            { name: "flag_tv", unicode: "🇹🇻" },
+            { name: "flag_ug", unicode: "🇺🇬" },
+            { name: "flag_ua", unicode: "🇺🇦" },
+            { name: "flag_ae", unicode: "🇦🇪" },
+            { name: "flag_gb", unicode: "🇬🇧" },
+            { name: "flag_us", unicode: "🇺🇸" },
+            { name: "flag_um", unicode: "🇺🇲" },
+            { name: "flag_vi", unicode: "🇻🇮" },
+            { name: "flag_uy", unicode: "🇺🇾" },
+            { name: "flag_uz", unicode: "🇺🇿" },
+            { name: "flag_vu", unicode: "🇻🇺" },
+            { name: "flag_va", unicode: "🇻🇦" },
+            { name: "flag_ve", unicode: "🇻🇪" },
+            { name: "flag_vn", unicode: "🇻🇳" },
+            { name: "flag_wf", unicode: "🇼🇫" },
+            { name: "flag_eh", unicode: "🇪🇭" },
+            { name: "flag_ye", unicode: "🇾🇪" },
+            { name: "flag_zm", unicode: "🇿🇲" },
+            { name: "flag_zw", unicode: "🇿🇼" },
+            { name: "flag_england", unicode: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+            { name: "flag_scotland", unicode: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+            { name: "flag_wales", unicode: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" }
+          ]
+        }
+      ];
+
+      // App state
+      let currentCategory = 0;
+      let currentEmoji = 0;
+      let outputText = false;
+      let copyMode = false;
+      let hoveredEmoji = null;
+      let hoverTimeout = null;
+      let allEmojis = [];
+      let filteredEmojis = [];
+      let searchQuery = '';
+
+      // Initialize the app
+      function init() {
+        flattenEmojis();
+        setupEventListeners();
+        updateDisplay();
+        updateSelectedEmoji();
+      }
+
+      // Flatten all emojis for search
+      function flattenEmojis() {
+        allEmojis = [];
+        categories.forEach((category, categoryIndex) => {
+          category.emojis.forEach((emoji, emojiIndex) => {
+            allEmojis.push({
+              ...emoji,
+              categoryIndex,
+              emojiIndex
+            });
+          });
+        });
+        filteredEmojis = [...allEmojis];
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Keyboard navigation
+        document.addEventListener('keydown', handleKeyDown);
+        
+        // Category tabs
+        document.querySelectorAll('.category-tab').forEach((tab, index) => {
+          tab.addEventListener('click', () => switchCategory(index));
+        });
+
+        // Emoji clicks
+        document.querySelectorAll('.emoji-item').forEach(item => {
+          item.addEventListener('click', handleEmojiClick);
+          item.addEventListener('mouseenter', handleEmojiHover);
+          item.addEventListener('mouseleave', handleEmojiLeave);
+          item.addEventListener('focus', handleEmojiHover);
+          item.addEventListener('blur', handleEmojiLeave);
+        });
+
+        // Search input
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', handleSearch);
+
+        // Control buttons
+        document.getElementById('toggleOutput').addEventListener('click', toggleOutputFormat);
+        document.getElementById('copyMode').addEventListener('click', toggleCopyMode);
+        document.getElementById('copyButton').addEventListener('click', copySelectedEmoji);
+        document.getElementById('insertButton').addEventListener('click', insertSelectedEmoji);
+
+        // Mobile touch events
+        if ('ontouchstart' in window) {
+          document.querySelectorAll('.emoji-item').forEach(item => {
+            item.addEventListener('touchstart', handleEmojiTouch);
+          });
+        }
+      }
+
+      // Handle keyboard navigation
+      function handleKeyDown(event) {
+        if (event.target.id === 'searchInput') {
+          if (event.key === 'Escape') {
+            clearSearch();
+            return;
+          }
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            document.querySelector('.emoji-item[tabindex="0"]')?.focus();
+            return;
+          }
+          return;
+        }
+
+        switch (event.key) {
+          case 'ArrowUp':
+            event.preventDefault();
+            navigateUp();
+            break;
+          case 'ArrowDown':
+            event.preventDefault();
+            navigateDown();
+            break;
+          case 'ArrowLeft':
+            event.preventDefault();
+            navigateLeft();
+            break;
+          case 'ArrowRight':
+            event.preventDefault();
+            navigateRight();
+            break;
+          case 'Tab':
+            if (event.shiftKey) {
+              event.preventDefault();
+              switchCategory(currentCategory > 0 ? currentCategory - 1 : categories.length - 1);
+            } else {
+              event.preventDefault();
+              switchCategory((currentCategory + 1) % categories.length);
+            }
+            break;
+          case 'Enter':
+            event.preventDefault();
+            selectCurrentEmoji();
+            break;
+          case 'Escape':
+            clearSearch();
+            break;
+          case '/':
+            event.preventDefault();
+            document.getElementById('searchInput').focus();
+            break;
+          case 'c':
+            if (event.ctrlKey || event.metaKey) {
+              event.preventDefault();
+              copySelectedEmoji();
+            }
+            break;
+          case 't':
+            event.preventDefault();
+            toggleOutputFormat();
+            break;
+        }
+      }
+
+      // Navigation functions
+      function navigateUp() {
+        const currentGrid = getCurrentGrid();
+        if (currentEmoji >= 9) {
+          currentEmoji -= 9;
+          updateEmojiSelection();
+        }
+      }
+
+      function navigateDown() {
+        const currentGrid = getCurrentGrid();
+        const maxIndex = currentGrid.length - 1;
+        if (currentEmoji + 9 <= maxIndex) {
+          currentEmoji += 9;
+          updateEmojiSelection();
+        }
+      }
+
+      function navigateLeft() {
+        if (currentEmoji > 0) {
+          currentEmoji--;
+          updateEmojiSelection();
+        }
+      }
+
+      function navigateRight() {
+        const currentGrid = getCurrentGrid();
+        const maxIndex = currentGrid.length - 1;
+        if (currentEmoji < maxIndex) {
+          currentEmoji++;
+          updateEmojiSelection();
+        }
+      }
+
+      function getCurrentGrid() {
+        return searchQuery ? filteredEmojis : categories[currentCategory].emojis;
+      }
+
+      // Category switching
+      function switchCategory(index) {
+        if (index === currentCategory) return;
+        
+        currentCategory = index;
+        currentEmoji = 0;
+        clearSearch();
+        updateDisplay();
+        updateEmojiSelection();
+      }
+
+      // Update display
+      function updateDisplay() {
+        // Update category tabs
+        document.querySelectorAll('.category-tab').forEach((tab, index) => {
+          const isActive = index === currentCategory;
+          tab.setAttribute('aria-selected', isActive);
+          tab.tabIndex = isActive ? 0 : -1;
+          
+          if (isActive) {
+            tab.className = 'category-tab px-4 py-2 rounded-lg border-2 border-blue-500 bg-blue-500 text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark\:focus:ring-offset-gray-900';
+          } else {
+            tab.className = 'category-tab px-4 py-2 rounded-lg border-2 border-transparent bg-white dark\:bg-gray-800 text-gray-700 dark\:text-gray-300 border-gray-200 dark\:border-gray-700 hover:bg-gray-50 dark\:hover:bg-gray-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark\:focus:ring-offset-gray-900';
+          }
+        });
+
+        // Update emoji panels
+        document.querySelectorAll('.emoji-panel').forEach((panel, index) => {
+          if (index === currentCategory && !searchQuery) {
+            panel.classList.remove('hidden');
+            panel.classList.add('block');
+          } else {
+            panel.classList.add('hidden');
+            panel.classList.remove('block');
+          }
+        });
+
+        // Update search results
+        if (searchQuery) {
+          showSearchResults();
+        }
+      }
+
+      // Update emoji selection
+      function updateEmojiSelection() {
+        document.querySelectorAll('.emoji-item').forEach(item => {
+          item.classList.remove('selected');
+          item.tabIndex = -1;
+        });
+
+        const currentGrid = getCurrentGrid();
+        if (currentGrid.length > 0) {
+          const currentEmojiData = currentGrid[currentEmoji];
+          let selector;
+          
+          if (searchQuery) {
+            selector = `.emoji-item[data-category="${currentEmojiData.categoryIndex}"][data-index="${currentEmojiData.emojiIndex}"]`;
+          } else {
+            selector = `.emoji-item[data-category="${currentCategory}"][data-index="${currentEmoji}"]`;
+          }
+          
+          const activeItem = document.querySelector(selector);
+          if (activeItem) {
+            activeItem.classList.add('selected');
+            activeItem.tabIndex = 0;
+            activeItem.focus();
+            activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+
+        updateSelectedEmoji();
+      }
+
+      // Update selected emoji display
+      function updateSelectedEmoji() {
+        const currentGrid = getCurrentGrid();
+        if (currentGrid.length > 0) {
+          const emoji = currentGrid[currentEmoji];
+          document.getElementById('selectedEmoji').textContent = emoji.unicode;
+          document.getElementById('selectedName').textContent = outputText ? `:${emoji.name}` : emoji.unicode;
+        }
+      }
+
+      // Handle emoji interactions
+      function handleEmojiClick(event) {
+        const item = event.target;
+        const category = parseInt(item.dataset.category);
+        const index = parseInt(item.dataset.index);
+        
+        if (searchQuery) {
+          const emoji = filteredEmojis.find(e => e.categoryIndex === category && e.emojiIndex === index);
+          if (emoji) {
+            currentEmoji = filteredEmojis.indexOf(emoji);
+          }
+        } else {
+          currentCategory = category;
+          currentEmoji = index;
+        }
+        
+        updateEmojiSelection();
+        selectCurrentEmoji();
+      }
+
+      function handleEmojiHover(event) {
+        const item = event.target;
+        hoveredEmoji = item;
+        
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+          if (hoveredEmoji === item) {
+            showTooltip(item);
+          }
+        }, 1000);
+      }
+
+      function handleEmojiLeave(event) {
+        hoveredEmoji = null;
+        clearTimeout(hoverTimeout);
+        hideTooltip();
+      }
+
+      function handleEmojiTouch(event) {
+        const item = event.target;
+        showTooltip(item);
+        setTimeout(() => hideTooltip(), 2000);
+      }
+
+      // Tooltip functions
+      function showTooltip(item) {
+        const tooltip = document.getElementById('emojiTooltip');
+        const name = item.dataset.name;
+        const rect = item.getBoundingClientRect();
+        
+        tooltip.textContent = `:${name}`;
+        tooltip.style.left = rect.left + rect.width / 2 + 'px';
+        tooltip.style.top = rect.top + window.scrollY + 'px';
+        tooltip.classList.remove('hidden');
+      }
+
+      function hideTooltip() {
+        document.getElementById('emojiTooltip').classList.add('hidden');
+      }
+
+      // Select current emoji
+      function selectCurrentEmoji() {
+        const currentGrid = getCurrentGrid();
+        if (currentGrid.length > 0) {
+          const emoji = currentGrid[currentEmoji];
+          const output = outputText ? `:${emoji.name}` : emoji.unicode;
+          
+          if (copyMode) {
+            navigator.clipboard.writeText(output).then(() => {
+              showNotification('Copied to clipboard!');
+            });
+          } else {
+            insertIntoActiveElement(output);
+          }
+        }
+      }
+
+      // Search functionality
+      function handleSearch(event) {
+        searchQuery = event.target.value.toLowerCase();
+        
+        if (searchQuery) {
+          filteredEmojis = allEmojis.filter(emoji => 
+            emoji.name.toLowerCase().includes(searchQuery) ||
+            emoji.unicode.includes(searchQuery)
+          );
+          
+          if (filteredEmojis.length > 0) {
+            currentEmoji = 0;
+            showSearchResults();
+          } else {
+            showNoResults();
+          }
+        } else {
+          clearSearch();
+        }
+        
+        updateEmojiSelection();
+      }
+
+      function showSearchResults() {
+        // Hide all panels
+        document.querySelectorAll('.emoji-panel').forEach(panel => {
+          panel.classList.add('hidden');
+        });
+        
+        // Show search results
+        let searchPanel = document.getElementById('searchResults');
+        if (!searchPanel) {
+          searchPanel = createSearchResultsPanel();
+          document.querySelector('.emoji-panels').appendChild(searchPanel);
+        }
+        
+        const grid = searchPanel.querySelector('.emoji-grid');
+        grid.innerHTML = '';
+        
+        filteredEmojis.forEach((emoji, index) => {
+          const button = document.createElement('button');
+          button.className = 'emoji-item';
+          button.setAttribute('role', 'gridcell');
+          button.setAttribute('data-emoji', emoji.unicode);
+          button.setAttribute('data-name', emoji.name);
+          button.setAttribute('data-category', emoji.categoryIndex);
+          button.setAttribute('data-index', emoji.emojiIndex);
+          button.setAttribute('aria-label', `${emoji.name} emoji`);
+          button.setAttribute('title', `:${emoji.name}`);
+          button.tabIndex = index === 0 ? 0 : -1;
+          button.textContent = emoji.unicode;
+          
+          button.addEventListener('click', handleEmojiClick);
+          button.addEventListener('mouseenter', handleEmojiHover);
+          button.addEventListener('mouseleave', handleEmojiLeave);
+          button.addEventListener('focus', handleEmojiHover);
+          button.addEventListener('blur', handleEmojiLeave);
+          
+          if ('ontouchstart' in window) {
+            button.addEventListener('touchstart', handleEmojiTouch);
+          }
+          
+          grid.appendChild(button);
+        });
+        
+        searchPanel.classList.remove('hidden');
+      }
+
+      function createSearchResultsPanel() {
+        const panel = document.createElement('div');
+        panel.id = 'searchResults';
+        panel.className = 'emoji-panel';
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-label', 'Search results');
+        
+        panel.innerHTML = `
+          <div class="bg-white dark\:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark\:border-gray-700">
+            <div class="p-6">
+              <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span class="text-2xl">🔍</span>
+                <span>Search Results</span>
+              </h2>
+              <div class="emoji-grid" role="grid" aria-label="Search results emojis"></div>
+            </div>
+          </div>
+        `;
+        
+        return panel;
+      }
+
+      function showNoResults() {
+        let searchPanel = document.getElementById('searchResults');
+        if (!searchPanel) {
+          searchPanel = createSearchResultsPanel();
+          document.querySelector('.emoji-panels').appendChild(searchPanel);
+        }
+        
+        const grid = searchPanel.querySelector('.emoji-grid');
+        grid.innerHTML = '<div class="col-span-full text-center text-gray-500 dark\:text-gray-400 py-8">No emojis found</div>';
+        
+        searchPanel.classList.remove('hidden');
+      }
+
+      function clearSearch() {
+        searchQuery = '';
+        filteredEmojis = [...allEmojis];
+        document.getElementById('searchInput').value = '';
+        
+        const searchPanel = document.getElementById('searchResults');
+        if (searchPanel) {
+          searchPanel.classList.add('hidden');
+        }
+        
+        updateDisplay();
+      }
+
+      // Control functions
+      function toggleOutputFormat() {
+        outputText = !outputText;
+        const button = document.getElementById('toggleOutput');
+        const format = document.getElementById('outputFormat');
+        
+        button.setAttribute('aria-checked', outputText);
+        format.textContent = outputText ? 'Text' : 'Unicode';
+        
+        if (outputText) {
+          button.className = 'px-3 py-1 rounded-full bg-green-100 dark\:bg-green-900 text-green-800 dark\:text-green-200 hover:bg-green-200 dark\:hover:bg-green-800 transition-colors';
+        } else {
+          button.className = 'px-3 py-1 rounded-full bg-blue-100 dark\:bg-blue-900 text-blue-800 dark\:text-blue-200 hover:bg-blue-200 dark\:hover:bg-blue-800 transition-colors';
+        }
+        
+        updateSelectedEmoji();
+      }
+
+      function toggleCopyMode() {
+        copyMode = !copyMode;
+        const button = document.getElementById('copyMode');
+        
+        if (copyMode) {
+          button.textContent = 'Insert Mode';
+          button.className = 'px-3 py-1 rounded-full bg-purple-100 dark\:bg-purple-900 text-purple-800 dark\:text-purple-200 hover:bg-purple-200 dark\:hover:bg-purple-800 transition-colors';
+        } else {
+          button.textContent = 'Copy Mode';
+          button.className = 'px-3 py-1 rounded-full bg-green-100 dark\:bg-green-900 text-green-800 dark\:text-green-200 hover:bg-green-200 dark\:hover:bg-green-800 transition-colors';
+        }
+      }
+
+      function copySelectedEmoji() {
+        const currentGrid = getCurrentGrid();
+        if (currentGrid.length > 0) {
+          const emoji = currentGrid[currentEmoji];
+          const output = outputText ? `:${emoji.name}` : emoji.unicode;
+          
+          navigator.clipboard.writeText(output).then(() => {
+            showNotification('Copied to clipboard!');
+          });
+        }
+      }
+
+      function insertSelectedEmoji() {
+        const currentGrid = getCurrentGrid();
+        if (currentGrid.length > 0) {
+          const emoji = currentGrid[currentEmoji];
+          const output = outputText ? `:${emoji.name}` : emoji.unicode;
+          insertIntoActiveElement(output);
+        }
+      }
+
+      function insertIntoActiveElement(text) {
+        const activeElement = document.activeElement;
+        
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+          const start = activeElement.selectionStart;
+          const end = activeElement.selectionEnd;
+          const value = activeElement.value;
+          
+          activeElement.value = value.slice(0, start) + text + value.slice(end);
+          activeElement.selectionStart = activeElement.selectionEnd = start + text.length;
+          activeElement.focus();
+          
+          showNotification('Inserted emoji!');
+        } else {
+          // Fallback to clipboard
+          navigator.clipboard.writeText(text).then(() => {
+            showNotification('Copied to clipboard!');
+          });
+        }
+      }
+
+      function showNotification(message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in';
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.remove();
+        }, 2000);
+      }
+
+      // Initialize the app when DOM is loaded
+      document.addEventListener('DOMContentLoaded', init);

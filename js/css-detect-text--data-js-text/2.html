@@ -1,0 +1,17 @@
+<style>
+@keyframes js-set-text {
+	from { content: ''; }
+	to { content: ''; }
+}
+
+.myh1:not([data-js-text]) { animation: js-set-text 0.1s; }
+</style>
+
+<script>
+document.addEventListener("animationstart", function (e) {
+	if (e.animationName !== "js-set-text") return;
+	e.target.setAttribute("data-js-text", e.target.textContent);
+});
+</script>
+
+<h1 class="myh1">Hello World</h1>

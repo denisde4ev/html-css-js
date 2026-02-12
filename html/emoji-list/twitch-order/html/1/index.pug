@@ -1,0 +1,34 @@
+doctype html
+<html>
+head
+	meta(charset='utf-8')
+	// if render blocking js: link(rel="prefetch",href="./script.js")
+	title Hello, World!
+	meta(name='description',content='Hello, World!')
+	meta(name='viewport',content='width=device-width,initial-scale=1')
+	link(href='./style.css',rel='stylesheet')
+	script(src='./script.js',async)
+	script(src='./lib/tw4.js')
+<body>
+
+h1 Hello, World!
+hr
+
+-
+	var items = [
+		{ "title": "Cell 1", "description": "Description 1" },
+		{ "title": "Cell 2", "description": "Description 2" },
+		// ...
+	];
+
+div.container.mx-auto.p-4
+	div.grid.grid-cols-9.gap-4
+		- for (const item of items)
+			div.bg-gray-100.p-2.rounded.shadow
+				h3.text-sm.font-semibold.mb-1=  item.title
+				p.text-xs.text-gray-700=        item.description
+
+
+
+</body>
+</html>

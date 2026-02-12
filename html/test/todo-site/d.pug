@@ -1,0 +1,483 @@
+doctype html
+html(lang="en" class="h-full")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Monokai Todo App
+    script(src="./lib/tw.js")
+    script(src="./lib/umbrella.js")
+    script(src="./lib/editable-tab.js" async)
+    style.
+      dialog {
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        margin: auto;
+      }
+      dialog::backdrop {
+        background: rgba(0, 0, 0, 0.5);
+      }
+  body(class="h-full bg-[#272822] dark:bg-[#1a1b16] text-[#f8f8f2] dark:text-[#f8f8f2] flex items-center justify-center min-h-screen")
+    //- Native template tag as direct child after body
+    template#task-template
+      li(
+        class="flex items-start gap-2 p-2 rounded bg-[#272822] dark:bg-[#1a1b16]"
+      )
+        input(type="checkbox" class="mt-1 accent-[#fd971f]")
+        //- setDone after checkbox
+        script.
+          TodoAppControl.prototype.setDone = function(id, done) {
+            var idx = this.tasks.findIndex(function(t) { return t.id === id; });
+            if (idx === -1) return;
+            this.tasks[idx].done = done;
+            this.save();
+            this.taskMap.get(id).update(this.tasks[idx]);
+          };
+
+        span(class="flex-1 whitespace-pre-line break-words font-mono px-1 rounded cursor-pointer transition-colors outline-none")
+        //- updateStyle after span
+        script.
+          TodoTask.prototype.updateStyle = function() {
+            if (this.data.done) {
+              this.span.classList.add('line-through', 'text-[#75715e]', 'dark:text-[#75715e]');
+              this.span.classList.remove('text-[#f8f8f2]', 'dark:text-[#f8f8f2]');
+            } else {
+              this.span.classList.remove('line-through', 'text-[#75715e]', 'dark:text-[#75715e]');
+              this.span.classList.add('text-[#f8f8f2]', 'dark:text-[#f8f8f2]');
+            }
+          };
+
+        button.edit-btn(
+          type="button"
+          class="px-2 py-1 rounded bg-[#fd971f] text-white text-xs font-bold ml-1"
+          aria-label="Edit task"
+        ) ✎
+        //- startEdit after edit button
+        script.
+          TodoTask.prototype.startEdit = function() {
+            if (this.span.isContentEditable) return;
+            this.span.contentEditable = "true";
+            this.span.classList.add('ring-2', 'ring-[#fd971f]', 'bg-[#49483e]');
+            this.span.setAttribute('role', 'textbox');
+            this.span.setAttribute('tabindex', '0');
+            this.span.focus();
+            document.execCommand('selectAll', false, null);
+            document.getSelection().collapseToEnd();
+            var self = this;
+            function finishEdit(e) {
+              if (e.type === 'keydown') {
+                if (
+                  e.key !== 'Enter' ||
+                  e.shiftKey ||
+                  e.ctrlKey ||
+                  e.altKey ||
+                  e.metaKey
+                ) return;
+                e.preventDefault();
+              }
+              self.span.contentEditable = "false";
+              self.span.classList.remove('ring-2', 'ring-[#fd971f]', 'bg-[#49483e]');
+              self.span.removeAttribute('role');
+              self.span.removeAttribute('tabindex');
+              var newText = self.span.textContent;
+              if (newText && newText !== self.data.text) {
+                self.control.setText(self.data.id, newText);
+              } else if (!newText) {
+                self.control.remove(self.data.id);
+              } else {
+                self.updateStyle();
+              }
+            }
+            this.span.addEventListener('blur', finishEdit, { once: true });
+            this.span.addEventListener('keydown', finishEdit);
+          };
+
+        button.up-btn(
+          type="button"
+          class="px-2 py-1 rounded bg-gray-700 dark:bg-gray-800 text-xs font-bold mr-1 text-white"
+          aria-label="Move up"
+        ) ↑
+        button.down-btn(
+          type="button"
+          class="px-2 py-1 rounded bg-gray-700 dark:bg-gray-800 text-xs font-bold text-white"
+          aria-label="Move down"
+        ) ↓
+        //- move after move arrows
+        script.
+          TodoAppControl.prototype.setupArrowKeys = function() {
+            this.list.addEventListener('keydown', function(e) {
+              if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+              var active = document.activeElement;
+              if (!this.list.contains(active)) return;
+              var li = active;
+              if (li.tagName !== 'LI') li = li.closest('li');
+              if (!li) return;
+              var items = Array.prototype.slice.call(
+                this.list.querySelectorAll('li:not(.task-template):not([style*="display: none"])')
+              );
+              var idx = items.indexOf(li);
+              if (idx === -1) return;
+              var nextIdx = e.key === 'ArrowUp' ? idx - 1 : idx + 1;
+              if (nextIdx < 0 || nextIdx >= items.length) return;
+              e.preventDefault();
+              items[nextIdx].focus();
+            }.bind(this));
+            this.list.addEventListener('focusin', function(e) {
+              var li = e.target;
+              if (li.tagName !== 'LI') li = li.closest('li');
+              if (li) li.setAttribute('tabindex', '-1');
+            });
+          };
+
+          TodoAppControl.prototype.move = function(id, direction) {
+            var idx = this.tasks.findIndex(function(t) { return t.id === id; });
+            var newIdx = idx + direction;
+            if (idx === -1 || newIdx < 0 || newIdx >= this.tasks.length) return;
+            var tempOrder = this.tasks[idx].order;
+            this.tasks[idx].order = this.tasks[newIdx].order;
+            this.tasks[newIdx].order = tempOrder;
+            var temp = this.tasks[idx];
+            this.tasks[idx] = this.tasks[newIdx];
+            this.tasks[newIdx] = temp;
+            this.save();
+            for (var i = 0; i < this.tasks.length; ++i) {
+              var t = this.tasks[i];
+              t.order = i;
+              this.taskMap.get(t.id).update(t);
+              this.list.children[i].style.order = i;
+            }
+            this.updateMoveButtons();
+          };
+          TodoAppControl.prototype.updateMoveButtons = function() {
+            for (var i = 0; i < this.tasks.length; ++i) {
+              var task = this.tasks[i];
+              var taskObj = this.taskMap.get(task.id);
+              if (taskObj) {
+                taskObj.upBtn.disabled = i === 0;
+                taskObj.downBtn.disabled = i === this.tasks.length - 1;
+                taskObj.setDisabledStyle(taskObj.upBtn, taskObj.upBtn.disabled);
+                taskObj.setDisabledStyle(taskObj.downBtn, taskObj.downBtn.disabled);
+              }
+            }
+          };
+        //- setDisabledStyle after up/down
+        script.
+          TodoTask.prototype.setDisabledStyle = function(btn, isDisabled) {
+            if (isDisabled) {
+              btn.classList.add(
+                "bg-gray-400",
+                "dark:bg-gray-700",
+                "text-gray-200",
+                "dark:text-gray-500",
+                "cursor-not-allowed",
+                "opacity-60"
+              );
+            } else {
+              btn.classList.remove(
+                "bg-gray-400",
+                "dark:bg-gray-700",
+                "text-gray-200",
+                "dark:text-gray-500",
+                "cursor-not-allowed",
+                "opacity-60"
+              );
+            }
+          };
+
+        button.del-btn(
+          type="button"
+          class="ml-2 px-2 py-1 rounded bg-red-500 text-white text-xs font-bold hover:bg-red-600"
+          aria-label="Delete task"
+        ) ✕
+        //- remove after delete button
+        script.
+          TodoAppControl.prototype.remove = function(id) {
+            var idx = this.tasks.findIndex(function(t) { return t.id === id; });
+            if (idx === -1) return;
+            this.tasks[idx].visible = false;
+            this.save();
+            this.taskMap.get(id).hide();
+            this.tasks.splice(idx, 1);
+            this.render();
+          };
+          TodoTask.prototype.remove = function() {
+            this.data.visible = false;
+            this.li.style.display = 'none';
+          };
+
+        //- hide/show after li
+        script.
+          TodoTask.prototype.hide = function() {
+            this.data.visible = false;
+            this.li.style.display = 'none';
+          };
+          TodoTask.prototype.show = function() {
+            this.data.visible = true;
+            this.li.style.display = '';
+          };
+
+        //- Constructor and init/update after all elements
+        script.
+          TodoTask.prototype.init = function() {
+            this.li.setAttribute('data-id', this.data.id);
+            this.li.style.display = this.data.visible === false ? 'none' : '';
+            this.li.style.order = this.data.order;
+            this.li.setAttribute('tabindex', '-1');
+            this.checkbox.checked = !!this.data.done;
+            this.span.textContent = this.data.text;
+            this.updateStyle();
+
+            this.checkbox.onclick = null;
+            this.span.onclick = null;
+            this.span.ondblclick = null;
+            this.editBtn.onclick = null;
+            this.upBtn.onclick = null;
+            this.downBtn.onclick = null;
+            this.delBtn.onclick = null;
+
+            // Checkbox
+            this.checkbox.onclick = () => {
+              this.control.setDone(this.data.id, !this.data.done);
+            };
+
+            // Double click to enable and edit (attach before single click)
+            this.span.ondblclick = (e) => {
+              if (this.data.done) {
+                this.control.setDone(this.data.id, false);
+                setTimeout(() => this.startEdit(), 0);
+              } else {
+                this.startEdit();
+              }
+            };
+
+            // Edit button only if not done
+            if (!this.data.done) {
+              this.editBtn.style.display = '';
+              this.editBtn.onclick = () => this.startEdit();
+            } else {
+              this.editBtn.style.display = 'none';
+            }
+
+            // Click to toggle done/enable
+            this.span.onclick = (e) => {
+              if (this.span.isContentEditable) return;
+              if (this.data.done) {
+                this.control.setDone(this.data.id, false);
+              } else {
+                this.control.setDone(this.data.id, true);
+              }
+            };
+
+            // Move up
+            this.upBtn.onclick = () => this.control.move(this.data.id, -1);
+
+            // Move down
+            this.downBtn.onclick = () => this.control.move(this.data.id, 1);
+
+            // Remove
+            this.delBtn.onclick = () => this.control.remove(this.data.id);
+
+            // Disabled state for up/down
+            this.upBtn.disabled = this.data.order === 0;
+            this.downBtn.disabled = this.data.order === this.control.tasks.length - 1;
+            this.setDisabledStyle(this.upBtn, this.upBtn.disabled);
+            this.setDisabledStyle(this.downBtn, this.downBtn.disabled);
+          };
+          TodoTask.prototype.update = function(data) {
+            this.data = data;
+            this.init();
+          };
+
+    main.container(class="w-full max-w-md mx-auto p-4 rounded-lg shadow-lg bg-[#3e3d32] dark:bg-[#23241f]")
+      h1(class="text-2xl font-bold mb-4 text-center text-[#fd971f] dark:text-[#fd971f]") Monokai Todo App
+      div.flex.justify-between.items-center.mb-4
+        span(class="font-semibold text-lg") Task List
+        button#open-modal(
+          type="button"
+          class="px-3 py-1 rounded bg-[#fd971f] text-white font-medium hover:bg-orange-600 transition-colors"
+          aria-label="Add new task"
+        ) + Add Task
+
+      //- Main controller constructor and helpers
+      script.
+        function TodoTask(data, control, li) {
+          this.data = data;
+          this.control = control;
+          this.li = li;
+          this.checkbox = li.querySelector('input[type=checkbox]');
+          this.span = li.querySelector('span');
+          this.editBtn = li.querySelector('.edit-btn');
+          this.upBtn = li.querySelector('.up-btn');
+          this.downBtn = li.querySelector('.down-btn');
+          this.delBtn = li.querySelector('.del-btn');
+          this.init();
+        }
+        window.TodoTask = TodoTask;
+
+      script.
+        function TodoAppControl() {
+          this.list = document.getElementById('todo-list');
+          this.template = document.getElementById('task-template');
+          this.tasks = [];
+          this.taskMap = new Map();
+          this.load();
+          this.render();
+          this.setupModal();
+          this.setupArrowKeys();
+        }
+        TodoAppControl.prototype.generateId = function() {
+          return '_' + Math.random().toString(36).substr(2, 9);
+        };
+        TodoAppControl.prototype.load = function() {
+          var data = [];
+          try {
+            data = JSON.parse(localStorage.getItem('tasks')) || [];
+          } catch {}
+          data = data.filter(function(t) { return t && t.text && typeof t.text === 'string'; });
+          data.forEach((t, i) => {
+            if (!t.id) t.id = this.generateId();
+            t.order = i;
+            t.visible = t.visible !== false;
+          });
+          this.tasks = data;
+        };
+        TodoAppControl.prototype.save = function() {
+          localStorage.setItem('tasks', JSON.stringify(this.tasks));
+        };
+        TodoAppControl.prototype.render = function() {
+          // Remove all current li children
+          while (this.list.firstChild) this.list.removeChild(this.list.firstChild);
+
+          // Add li for each task
+          for (var i = 0; i < this.tasks.length; ++i) {
+            var task = this.tasks[i];
+            if (task.visible === false) continue;
+            var li = this.template.content.firstElementChild.cloneNode(true);
+            this.list.appendChild(li);
+          }
+
+          // Map and update
+          var lis = this.list.children;
+          this.taskMap.clear();
+          var liIndex = 0;
+          for (var i = 0; i < this.tasks.length; ++i) {
+            var task = this.tasks[i];
+            if (task.visible === false) continue;
+            var li = lis[liIndex++];
+            if (!li) continue;
+            if (!li.todoTask) {
+              li.todoTask = new window.TodoTask(task, this, li);
+            } else {
+              li.todoTask.update(task);
+            }
+            this.taskMap.set(task.id, li.todoTask);
+            li.style.order = i;
+          }
+          this.updateMoveButtons();
+        };
+        window.TodoAppControl = TodoAppControl;
+
+      ul#todo-list(
+        class="space-y-2 grid"
+        aria-label="Todo list"
+        style="display: grid; grid-auto-rows: minmax(0,auto);"
+      )
+
+      //- Modal for adding a new task
+      dialog#add-modal(
+        class="rounded-lg shadow-xl p-0 border-0 bg-[#3e3d32] dark:bg-[#23241f] text-[#f8f8f2] dark:text-[#f8f8f2] w-full max-w-md"
+      )
+        form#todo-form(
+          method="dialog"
+          class="flex flex-col gap-3 p-6 pt-4"
+          aria-label="Add new task"
+        )
+          div.flex.justify-between.items-center.mb-2
+            h2(class="text-xl font-bold text-[#fd971f] dark:text-[#fd971f]") New Task
+            button#close-modal(
+              type="button"
+              class="text-2xl font-bold text-[#fd971f] dark:text-[#fd971f] hover:text-orange-400 transition-colors px-2 py-0 rounded"
+              aria-label="Close modal"
+              title="Close"
+            ) ×
+          textarea#new-task(
+            class="resize-y min-h-[60px] max-h-40 p-2 rounded border border-[#75715e] dark:border-[#75715e] focus:outline-none focus:ring-2 focus:ring-[#fd971f] bg-[#49483e] dark:bg-[#49483e] text-[#f8f8f2] font-mono"
+            placeholder="Type your task here..."
+            aria-label="Task description"
+            required
+          )
+          div.flex.justify-end
+            button(
+              type="submit"
+              class="px-3 py-1 rounded bg-[#fd971f] text-white font-medium hover:bg-orange-600 transition-colors"
+              aria-label="Add task"
+            ) Add Task
+            //- add after modal add button
+            script.
+              TodoAppControl.prototype.add = function(text) {
+                if (!text || !text.length) return;
+                var newTask = {
+                  id: this.generateId(),
+                  text: text,
+                  done: false,
+                  order: this.tasks.length,
+                  visible: true
+                };
+                this.tasks.push(newTask);
+                this.save();
+                this.render();
+              };
+      script.
+        TodoAppControl.prototype.setupModal = function() {
+          var modal = document.getElementById('add-modal');
+          var openModalBtn = document.getElementById('open-modal');
+          var closeModalBtn = document.getElementById('close-modal');
+          var todoForm = document.getElementById('todo-form');
+          var newTaskTextarea = document.getElementById('new-task');
+
+          openModalBtn.addEventListener('click', function() {
+            modal.showModal();
+            setTimeout(function() { newTaskTextarea.focus(); }, 100);
+          });
+
+          closeModalBtn.addEventListener('click', function() {
+            modal.close();
+          });
+
+          modal.addEventListener('click', function(event) {
+            var rect = modal.getBoundingClientRect();
+            if (
+              event.clientY < rect.top ||
+              event.clientY > rect.bottom ||
+              event.clientX < rect.left ||
+              event.clientX > rect.right
+            ) {
+              modal.close();
+            }
+          });
+
+          todoForm.addEventListener('submit', ((e) => {
+            e.preventDefault();
+            var text = newTaskTextarea.value;
+            if (text && text.length) {
+              this.add(text);
+              todoForm.reset();
+              modal.close();
+            }
+          }).bind(this));
+        };
+
+      //- setText after all task text editing
+      script.
+        TodoAppControl.prototype.setText = function(id, text) {
+          var idx = this.tasks.findIndex(function(t) { return t.id === id; });
+          if (idx === -1) return;
+          this.tasks[idx].text = text;
+          this.save();
+          this.taskMap.get(id).update(this.tasks[idx]);
+        };
+
+      //- Start the app
+      script.
+        window.addEventListener('DOMContentLoaded', function() {
+          new window.TodoAppControl();
+        });

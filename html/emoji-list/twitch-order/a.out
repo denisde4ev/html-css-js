@@ -1,0 +1,49 @@
+// Global handles
+window.tooltipObserver = null
+window.emojiSet = new Set()
+
+// Start observing (auto-disconnects any prior observer)
+window.startTooltipObserver = function() {
+  if (window.tooltipObserver) {
+    window.tooltipObserver.disconnect()
+    window.tooltipObserver = null
+  }
+
+  var container = document.getElementById('root') 
+               || document.querySelector('div#root') 
+               || document.body
+
+  window.tooltipObserver = new MutationObserver(function() {
+    var tips = container.querySelectorAll('.ffz__tooltip--inner')
+    tips.forEach(function(el) {
+      var txt = el.innerText.trim()
+      if (!window.emojiSet.has(txt)) {
+        window.emojiSet.add(txt)
+        console.log(txt)
+      }
+    })
+  })
+
+  window.tooltipObserver.observe(container, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    characterData: true
+  })
+}
+
+// Stop observing
+window.stopTooltipObserver = function() {
+  if (window.tooltipObserver) {
+    window.tooltipObserver.disconnect()
+    window.tooltipObserver = null
+  }
+}
+
+// Auto-start
+startTooltipObserver()
+
+logging.ts:310 FFZ [site.compat_emote_menu]: Emote Menu for Twitch was not found after 60 seconds.
+undefined
+
+

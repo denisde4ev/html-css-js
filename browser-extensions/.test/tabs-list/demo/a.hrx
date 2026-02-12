@@ -1,0 +1,38 @@
+<===> manifest.json
+{
+	"manifest_version": 2,
+	"name": "Click & Settings Demo",
+	"version": "1.0",
+	"description": "Demo extension with click event and settings page.",
+	"browser_action": {
+		"default_title": "Click Me"
+	},
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": false
+	},
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"permissions": []
+}
+
+<===> background.js
+browser.browserAction.onClicked.addListener(() => {
+	browser.tabs.executeScript({
+		code: "alert('extension clicked');"
+	});
+});
+
+<===> options.html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Extension Settings</title>
+</head>
+<body>
+	<h1>Preferences</h1>
+	<span>this is settings.</span>
+</body>
+</html>

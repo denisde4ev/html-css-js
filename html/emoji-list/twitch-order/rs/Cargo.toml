@@ -1,0 +1,13 @@
+[package]
+name = "emoji-pick"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "emoji-pick"
+path = "src/main.rs"
+
+[dependencies]
+crossterm = "0.27"
+ratatui = "0.24"
+clap = { version = "4.0", features = ["derive"] }
