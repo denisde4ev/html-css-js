@@ -1,0 +1,29 @@
+<body>
+<script src="./req@v0.3.2-alpha.mini.js"></script>
+<script>
+var req = Req('.');
+
+void async function() {
+	var myCalcLib = await req('myCalcLib');
+
+	if (myCalcLib([1,2,3]) === 6) {
+		console.log('ok async');
+	} else {
+		console.error('fail async');
+	}
+}();
+
+
+// and at the same time call sync one:
+//document.addEventListener('load',()=>{
+	document.addEventListener('click', function() {	
+		var myCalcLib = req('myCalcLib', false);
+
+		if (myCalcLib([1,2,3]) === 6) {
+			console.log('ok sync');
+		} else {
+			console.error('fail sync');
+		}
+	});
+//});
+</script>

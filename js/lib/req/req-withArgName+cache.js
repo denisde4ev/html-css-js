@@ -16,3 +16,7 @@ function req(name, vars) { // `vars` may be (string or array) of valid js variab
 }
 req.loaded = {};
 req.basepath = '/assets/js/'
+
+
+// usage: req('mycountlib')
+//        req('mycountlib', 'countLib, countLibAsync')[1]

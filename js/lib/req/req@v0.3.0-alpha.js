@@ -1,7 +1,8 @@
-var req;req = (_=>{
 
-req.basepath = {__proto__:null}; // must be redefined
-////// req.basepath = 'https://cdn.jsdelivr.net/gh/denisde4ev'
+var Req;Req = (_=>{
+
+req.basepath = basepath;
+// example basepath: 'https://cdn.jsdelivr.net/gh/denisde4ev'
 req.modules = {};
 
 
@@ -72,7 +73,9 @@ function req(name, isasync = false) {
 	}
 
 	var module = req.modules[name];
-	if (module) {
+	var p;
+	var p_o, p_x;
+	if (module) { // TODO:!!! HERE CHECK WHAT IT RETURNS FOR SYNC vs ASYNC, should be promise, idk if should make the request again or ....
 		if (isasync) return module;
 		if (module.request && module.request.async) {
 			console.warn('req used on async loading lib, note: aborting old request and starting sync one');
@@ -83,7 +86,9 @@ function req(name, isasync = false) {
 			return module.exports;
 		}
 	} else {
-		if (!isasync) {
+		if (isasync) {
+			p = new Promise((o,x) => (p_o=o, p_x=x));
+		} else {
 			console.warn('req used on not loaded lib: ' + name);
 		}
 		var xhr = new XMLHttpRequest();
@@ -92,14 +97,26 @@ function req(name, isasync = false) {
 		module = req.modules[name] = new req._Module(name, url, xhr);
 
 		xhr.onload = e => {
-			// todo:! check response status + response header content type
-			var code = e.target.responseText;
-			req._evalmodule(code, module);
+			try {
+				// todo:! check response status + response header content type
+				var code = e.target.responseText;
+				req._evalmodule(code, module);
+			} catch (err) {
+				p_x({type: 'throws', e: e, err: err});
+			}
+		
 		};
+		xhr.ontimeout = e => { p_x({ok: false, type: "timeout",       e: e}); };
+		xhr.onerror   = e => { p_x({ok: false, type: "network_error", e: e}); };
+		xhr.onabort   = e => { p_x({ok: false, type: "request_abort", e: e}); }; // TODO:! check if any sync calls are called, and resolve from it
 		xhr.send();
-	}
+	};
 
-	if (isasync) return { module: module }; // TODO:! return promise
+	if (isasync) {
+		p.module = module;
+		module._p = p;
+		return p;
+	}
 
 	if (!module.isloaded) {
 		throw new Error('lib: '+name+'. is still loading for sync request');
@@ -108,6 +125,9 @@ function req(name, isasync = false) {
 	return module.exports;
 }
 
-if (typeof module !== 'undefined') module.exports.req = req; // pointless, but ok
 return req;
-})();
+
+});
+
+if (typeof module !== 'undefined') module.exports.Req = Req; // pointless, but ok
+Req;

@@ -1,0 +1,25 @@
+<body>
+
+should throw error<br>
+
+testing: myAsyncCircularLib.js and mySyncCircularLib.js
+<script src="./req@v0.3.2-alpha.mini.js"></script>
+<script>
+var req = Req('.');
+
+// should throw erorror
+
+try {
+	req('myAsyncCircularLib');
+	//req('myAsyncCircularLib', false);
+} catch (e) { console.error(e); }
+
+
+
+
+document.addEventListener('click', function() {	
+	req('mySyncCircularLib');
+	//req('mySyncCircularLib', false);
+});
+
+</script>
