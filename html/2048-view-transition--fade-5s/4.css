@@ -1,0 +1,136 @@
+body {
+	font-family : Arial, Helvetica, sans-serif;
+	text-align : center;
+}
+
+hr {
+	width : 500px;
+}
+
+/*
+#board {
+	width : 400px;
+	height : 400px;
+
+	background-color: #cdc1b5;
+	border : 6px solid #bbada0;
+
+	margin : 0 auto;
+	display : flex;
+	flex-wrap : wrap;
+}
+
+.tile {
+	width : 90px;
+	height : 90px;
+	border : 5px solid #bbada0;
+
+	font-size: 40px;
+	font-weight: bold;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+*/
+
+@media (0px<width){
+:root {
+	--bg-2: #eee4da; --bg-4: #ede0c8; --bg-8: #f2b179;
+	--bg-16: #f59563; --bg-32: #f67c5f; --bg-64: #f65e3b;
+	--bg-128: #edcf72; --bg-256: #edcc61; --bg-512: #edc850;
+	--bg-1024: #edc53f; --bg-2048: #edc53f;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	background: #faf8ef;
+	font-family: system-ui, sans-serif;
+	user-select: none;
+}
+
+
+
+
+#board {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+	background: #bbada0;
+	padding: 10px;
+	border-radius: 6px;
+	touch-action: none;
+}
+
+:where(#board > *) {
+	width: 70px;
+	height: 70px;
+	background: #cdc1b4;
+	border-radius: 4px;
+	position: relative;
+}
+
+
+.cell:has(>.tile) {
+	position: relative;
+	> .tile {
+		position: absolute;
+		inset: 0;
+	}
+}
+
+.tile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	font-weight: bold;
+	font-size: 30px;
+	/* background: var(--bg-2); */
+	color: #776e65;
+	transition: background-color 0.2s;
+}
+}
+
+.x2, .tile[data-val="2"] {          background-color: #eee4da;         color: #727371; }
+.x4, .tile[data-val="4"] {          background-color: #ece0ca;         color: #727371; }
+.x8, .tile[data-val="8"] {          background-color: #f4b17a;         color: white;  }
+.x16, .tile[data-val="16"] {        background-color: #f59575;         color: white;  }
+.x32, .tile[data-val="32"] {        background-color: #f57c5f;         color: white;  }
+.x64, .tile[data-val="64"] {        background-color: #f65d3b;         color: white;  }
+.x128, .tile[data-val="128"] {      background-color: #edce71;         color: white;  }
+.x256, .tile[data-val="256"] {      background-color: #edcc63;         color: white;  }
+.x512, .tile[data-val="512"] {      background-color: #edc651;         color: white;  }
+.x1024, .tile[data-val="1024"] {    background-color: #ecc744;         color: white;  }
+.x2048, .tile[data-val="2048"] {    background-color: #ecc230;         color: white;  }
+.x4096, .tile[data-val="4096"] {    background-color: #fe3d3d;         color: white;  }
+.x8192, .tile[data-val="8192"] {    background-color: #ff2020;         color: white;  }
+
+
+
+
+
+/* the animation for all elements */
+::view-transition-group(*) {
+    animation-duration: 5s;
+}
+
+/* Optional: force a fade for the root transition if desired */
+/* ::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0s;
+} */
+
+#board {
+    view-transition-name: board;
+}
+
+.tile {
+    /*  Each tile will get a unique view-transition-name via JS to allow smooth cross-fades */
+		
+}

@@ -1,0 +1,305 @@
+
+
+// fork from https://github.com/SanjaiG2003/2048-game/blob/main/2048_Game/2048.js
+// ai prompt: make it into OOP
+// ai prompt: add jsdoc comments everywhere
+
+/**
+ * Game2048 Class - Handles core game logic and primitive UI updates.
+ * @constructor
+ */
+function Game2048() {
+    /** @type {number[][]|null} */
+    this.board = null;
+    /** @type {number} */
+    this.score = 0;
+    /** @type {number} */
+    this.rows = 4;
+    /** @type {number} */
+    this.columns = 4;
+
+    this.setGame();
+}
+
+/**
+ * Initializes the game board and DOM elements.
+ * @returns {Game2048}
+ */
+Game2048.prototype.setGame = function() {
+    if (!(this instanceof Game2048)) return new Game2048();
+    this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ];
+
+    for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.columns; c++) {
+            let tile = document.createElement("div");
+            tile.id = r.toString() + "-" + c.toString();
+            let num = this.board[r][c];
+            this.updateTile(tile, num);
+            document.getElementById("board").append(tile);
+        }
+    }
+    this.setTwo();
+    this.setTwo();
+}
+
+/**
+ * Checks if there is at least one empty tile on the board.
+ * @returns {boolean} True if an empty tile exists.
+ */
+Game2048.prototype.hasEmptyTile = function() {
+    for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.columns; c++) {
+            if (this.board[r][c] == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+ * Spawns a '2' tile in a random empty cell.
+ * @returns {void}
+ */
+Game2048.prototype.setTwo = function() {
+    if (!this.hasEmptyTile()) return;
+
+    let found = false;
+    while (!found) {
+        let r = Math.floor(Math.random() * this.rows);
+        let c = Math.floor(Math.random() * this.columns);
+
+        if (this.board[r][c] == 0) {
+            this.board[r][c] = 2;
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            tile.innerText = "2";
+            tile.classList.add("x2");
+            found = true;
+        }
+    }
+}
+
+/**
+ * Updates the visual representation of a tile.
+ * @param {HTMLElement} tile - The tile DOM element.
+ * @param {number} num - The value to display.
+ * @returns {void}
+ */
+Game2048.prototype.updateTile = function(tileEl, num) {
+    tileEl.innerText = "";
+    tileEl.classList.value = "";
+    tileEl.classList.add("tile");
+    if (num > 0) {
+        tileEl.innerText = num;
+        if (num <= 4096) {
+            tileEl.classList.add("x" + num.toString());
+        } else {
+            tileEl.classList.add("x8192");
+        }
+    }
+}
+
+/** @type {Game2048} */
+var game2048;
+
+window.onload = function() {
+    game2048 = new Game2048();
+}
+
+document.addEventListener("keyup", (e) => {
+    if (e.code == "ArrowLeft") {
+        game2048.slideLeft();
+        game2048.setTwo();
+        game2048.checkWin();
+    } else if (e.code == "ArrowRight") {
+        game2048.slideRight();
+        game2048.setTwo();
+        game2048.checkWin();
+    } else if (e.code == "ArrowUp") {
+        game2048.slideUp();
+        game2048.setTwo();
+        game2048.checkWin();
+    } else if (e.code == "ArrowDown") {
+        game2048.slideDown();
+        game2048.setTwo();
+        game2048.checkWin();
+    }
+    document.getElementById("score").innerText = game2048.score;
+});
+
+/**
+ * Removes zeros from a row array.
+ * @param {number[]} row - Array of numbers.
+ * @returns {number[]} Array without zeros.
+ */
+Game2048.prototype.filterZero = function(row) {
+    return row.filter(num => num != 0);
+}
+
+/**
+ * Slides and merges a single row or column.
+ * @param {number[]} row - Array representing a row/column.
+ * @returns {number[]} The processed array.
+ */
+Game2048.prototype.slide = function(row) {
+    row = this.filterZero(row);
+
+    for (let i = 0; i < row.length - 1; i++) {
+        if (row[i] == row[i + 1]) {
+            row[i] *= 2;
+            row[i + 1] = 0;
+            this.score += row[i];
+        }
+    }
+    row = this.filterZero(row);
+
+    while (row.length < this.columns) {
+        row.push(0);
+    }
+    return row;
+}
+
+/**
+ * Handles sliding logic for the Left direction.
+ * @returns {void}
+ */
+Game2048.prototype.slideLeft = function() {
+    for (let r = 0; r < this.rows; r++) {
+        let row = this.board[r];
+        row = this.slide(row);
+        this.board[r] = row;
+
+        for (let c = 0; c < this.columns; c++) {
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = this.board[r][c];
+            this.updateTile(tile, num);
+        }
+    }
+
+    if (!this.checkWin()) {
+        if (this.isGameOver()) alert("💀 Game Over!");
+    }
+}
+
+/**
+ * Handles sliding logic for the Right direction.
+ * @returns {void}
+ */
+Game2048.prototype.slideRight = function() {
+    for (let r = 0; r < this.rows; r++) {
+        let row = this.board[r];
+        row.reverse();
+        row = this.slide(row);
+        row.reverse();
+        this.board[r] = row;
+
+        for (let c = 0; c < this.columns; c++) {
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = this.board[r][c];
+            this.updateTile(tile, num);
+        }
+    }
+
+    if (!this.checkWin()) {
+        if (this.isGameOver()) alert("💀 Game Over!");
+    }
+}
+
+/**
+ * Handles sliding logic for the Up direction.
+ * @returns {void}
+ */
+Game2048.prototype.slideUp = function() {
+    for (let c = 0; c < this.columns; c++) {
+        let row = [this.board[0][c], this.board[1][c], this.board[2][c], this.board[3][c]];
+        row = this.slide(row);
+
+        for (let r = 0; r < this.rows; r++) {
+            this.board[r][c] = row[r];
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = this.board[r][c];
+            this.updateTile(tile, num);
+        }
+    }
+
+    if (!this.checkWin()) {
+        if (this.isGameOver()) alert("💀 Game Over!");
+    }
+}
+
+/**
+ * Handles sliding logic for the Down direction.
+ * @returns {void}
+ */
+Game2048.prototype.slideDown = function() {
+    for (let c = 0; c < this.columns; c++) {
+        let row = [this.board[0][c], this.board[1][c], this.board[2][c], this.board[3][c]];
+        row.reverse();
+        row = this.slide(row);
+        row.reverse();
+
+        for (let r = 0; r < this.rows; r++) {
+            this.board[r][c] = row[r];
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = this.board[r][c];
+            this.updateTile(tile, num);
+        }
+    }
+
+    if (!this.checkWin()) {
+        if (this.isGameOver()) alert("💀 Game Over!");
+    }
+}
+
+/**
+ * Checks if no more moves are possible (board is full and no adjacent matches).
+ * @returns {boolean} True if the game is over.
+ */
+Game2048.prototype.isGameOver = function() {
+    for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.columns; c++) {
+            if (this.board[r][c] === 0) {
+                return false;
+            }
+        }
+    }
+
+    for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.columns - 1; c++) {
+            if (this.board[r][c] === this.board[r][c + 1]) {
+                return false;
+            }
+        }
+    }
+
+    for (let r = 0; r < this.rows - 1; r++) {
+        for (let c = 0; c < this.columns; c++) {
+            if (this.board[r][c] === this.board[r + 1][c]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Checks if any tile on the board has reached the value 2048.
+ * @returns {boolean} True if user won.
+ */
+Game2048.prototype.checkWin = function() {
+    for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.columns; c++) {
+            if (this.board[r][c] === 2048) {
+                alert("🎉 Congratulations! You reached 2048! 🎉");
+                return true;
+            }
+        }
+    }
+    return false;
+}

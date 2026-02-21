@@ -1,0 +1,32 @@
+body {
+	background-color: #121213;
+	color: #f9f6f2;
+}
+
+h1, h2 {
+	color: #f9f6f2;
+}
+
+#board {
+	background-color: #191500;
+}
+
+:where(#board > *) {
+	background-color: #2F1F0E;
+}
+
+.tile {
+	color: #f9f6f2;
+}
+
+/* Original colors for high value tiles work well, 
+   but 2 and 4 are too light for dark mode, so we adjust them. */
+/* .x2, .tile[data-val="2"] { background-color: #3e3e3e; color: #f9f6f2; } */
+.x2, .tile[data-val="2"] { background-color: #2F1F0E; color: #9E9588; }
+/* .x4, .tile[data-val="4"] { background-color: #4e4e4e; color: #f9f6f2; } */
+.x4, .tile[data-val="4"] { background-color: #2F1F0E; color: #9E9588; }
+
+/* Score and other text */
+#score {
+	color: #f9f6f2;
+}

@@ -1,0 +1,77 @@
+
+
+/* 2048 Game Styles */
+:root {
+	--bg-2: #eee4da; --bg-4: #ede0c8; --bg-8: #f2b179;
+	--bg-16: #f59563; --bg-32: #f67c5f; --bg-64: #f65e3b;
+	--bg-128: #edcf72; --bg-256: #edcc61; --bg-512: #edc850;
+	--bg-1024: #edc53f; --bg-2048: #edc53f;
+}
+
+body {
+	margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+	min-height: 100vh; background: #faf8ef; font-family: system-ui, sans-serif;
+	user-select: none;
+}
+
+
+/* @media (prefers-color-scheme: dark) {
+	body {
+		background: #121212;
+	}
+} */
+
+
+#board {
+	display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+	background: #bbada0; padding: 10px; border-radius: 6px;
+	touch-action: none;
+}
+
+.cell {
+	width: 70px; height: 70px; background: #cdc1b4; border-radius: 4px; position: relative;
+}
+
+.tile {
+	position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+	border-radius: 4px; font-weight: bold; font-size: 30px;
+	background: var(--bg-2); color: #776e65;
+	transition: background-color 0.2s;
+}
+
+.tile[data-val="4"] { background-color: var(--bg-4); }
+.tile[data-val="8"] { background-color: var(--bg-8); color: #f9f6f2; }
+.tile[data-val="16"] { background-color: var(--bg-16); color: #f9f6f2; }
+.tile[data-val="32"] { background-color: var(--bg-32); color: #f9f6f2; }
+.tile[data-val="64"] { background-color: var(--bg-64); color: #f9f6f2; }
+.tile[data-val="128"] { background-color: var(--bg-128); color: #f9f6f2; font-size: 24px; }
+.tile[data-val="256"] { background-color: var(--bg-256); color: #f9f6f2; font-size: 24px; }
+.tile[data-val="512"] { background-color: var(--bg-512); color: #f9f6f2; font-size: 24px; }
+.tile[data-val="1024"], .tile[data-val="2048"] { background-color: var(--bg-1024); color: #f9f6f2; font-size: 20px; }
+
+/* Merge Animation */
+.tile.merged {
+	animation: merge-pop 0.3s ease-out 0.1s both;
+	z-index: 10 !important;
+}
+
+@keyframes merge-pop {
+	0% { transform: scale(1); background-color: var(--old-bg); }
+	40% { transform: scale(1.2); background-color: var(--old-bg); }
+	100% { transform: scale(1); background-color: var(--new-bg); }
+}
+
+/* New Tile Animation */
+.tile.new {
+	animation: new-tile 0.2s ease-out 0.2s both;
+}
+
+@keyframes new-tile {
+	0% { transform: scale(0); }
+	100% { transform: scale(1); }
+}
+
+::view-transition-group(*) { animation-duration: 0.15s; }
+::view-transition-old(*), ::view-transition-new(*) {
+	animation-duration: 0.15s;
+}
