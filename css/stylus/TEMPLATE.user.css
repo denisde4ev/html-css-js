@@ -8,6 +8,9 @@
 ==/UserStyle==
 docs1: https://github.com/openstyles/stylus/wiki/UserCSS
 docs2: https://github.com/openstyles/stylus/wiki/Writing-UserCSS
+
+script url: https://github.com/denisde4ev/html-css-js/blob/master/css/stylus/TEMPLATE.user.css
+script install url: https://github.com/denisde4ev/html-css-js/raw/master/css/stylus/TEMPLATE.user.css
 */
 
 @-moz-document domain("example.com") {
