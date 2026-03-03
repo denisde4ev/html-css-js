@@ -5,7 +5,7 @@
 @description Auto hide Figma side pannels when page is outside the page (blur the page) or when page window gets smaller <500px
 @namespace   https://userstyles.world/user/denisde4ev
 @author      denisde4ev
-==/UserStyle==
+==/UserStyle== *//*
 preview1: // for now no // consider
 
 script url: https://github.com/denisde4ev/html-css-js/blob/master/css/stylus/figma-autohide-ui.user.css
