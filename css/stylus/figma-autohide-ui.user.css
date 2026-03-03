@@ -1,0 +1,35 @@
+/* ==UserStyle==
+@name        Figma autohide side pannels
+@version     1.0.0
+@description Auto hide Figma side pannels when page is outside the page (blur the page) or when page window gets smaller <500px
+@namespace   https://userstyles.world/user/denisde4ev
+@author      denisde4ev
+==/UserStyle== */
+/*
+preview1: // for now no // consider
+
+script url: https://github.com/denisde4ev/html-css-js/blob/master/css/stylus/figma-autohide-ui.user.css
+script published url: ????? // example: https://userstyles.world/style/???
+*/
+
+@-moz-document url-prefix("https://www.figma.com/design/") {
+[aria-label="Help/zoom toolbar"] { display: none !important; }
+
+/* on small screen hide UI */
+@media (height < 500px) OR (width < 500px) {
+	.fullscreen_view--flexContainer--yQS30 {visibility: hidden !important;}
+}
+/* note bug:
+when I hide ui, even tho the canvas is visible,
+figma sometimes calc it is not,
+and that only UI will be rendered,
+so it gets empty page.
+
+to fix this you could just minimize/close side pannels
+*/
+
+
+/* when mouse not in the page */
+:root:not(:hover)
+.fullscreen_view--flexContainer--yQS30 {visibility: hidden !important;}
+}
