@@ -7,8 +7,12 @@
 ==/UserStyle== */
 /*
 NOTE: I'm using id's as first version, I'll see if this will work in long term. expect soon update when fb update the page IDs
-preview: https://f000.backblazeb2.com/file/jpgshared/DQRK3PgW
+
+preview1: https://f000.backblazeb2.com/file/jpgshared/DQRK3PgW
+preview1: https://userstyles.world/preview/26888/0t.webp
+
 script url: https://github.com/denisde4ev/html-css-js/blob/master/css/stylus/fb-hide-bar.user.css
+script published url: https://userstyles.world/style/26888/default-slug
 */
 
 @-moz-document url-prefix("https://www.facebook.com/messages/") {
