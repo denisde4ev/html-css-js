@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Timing Test</title>
+<style>
+  body { font-family: sans-serif; font-size: 20px; padding: 20px; }
+  #fps { font-weight: bold; }
+</style>
+<!--
+prompt:
+give me simple page that tests how fast could we get setTimeout
+and in if case in the beggining of the page add config `const TESTINGTYPE = 'setTimeout' // or 'requestanimationFrame'`
+it should just update one span that has the digit, next to it outside the span add 'ps'title="per second" ( "per second" as fps)
+
+human addition: 'async microtask'
+-->
+<script>
+// Change this to 'setTimeout' or 'requestAnimationFrame'
+
+//const TESTINGTYPE = 'setTimeout'; // or 'requestAnimationFrame'
+const TESTINGTYPE = 'requestAnimationFrame'
+//const TESTINGTYPE = 'async microtask'
+
+
+
+console.log(1);
+debugger;
+
+let counter = 0;
+let lastTime = performance.now();
+
+function updateFPS() {
+  const now = performance.now();
+  const delta = now - lastTime;
+
+  if (1000 <= delta) {
+    document.getElementById("fps").textContent = counter;
+    counter = 0;
+    lastTime = now;
+
+    return true;
+  }
+}
+
+function loop() {
+  counter++;
+  if (updateFPS() && TESTINGTYPE === 'async microtask') {
+  	setTimeout(loop, 0);
+  	return;
+  }
+
+  if (TESTINGTYPE === 'requestAnimationFrame') {
+    requestAnimationFrame(loop);
+  } else if (TESTINGTYPE === 'setTimeout') {
+    setTimeout(loop, 0);
+  } else if (TESTINGTYPE === 'async microtask') {
+  	Promise.resolve().then(loop);
+  }
+}
+
+window.onload = () => {
+  loop();
+};
+</script>
+</head>
+<body>
+
+Running: <strong><script>document.write(TESTINGTYPE);</script></strong><br><br>
+
+FPS: <span id="fps">0</span> ps <span title="per second">(per second)</span>
+
+</body>
+</html>
